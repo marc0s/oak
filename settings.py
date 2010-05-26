@@ -8,6 +8,9 @@ AUTHOR = 'Marcos'
 # Set the path to the directory where the contents will be created
 CONTENT_PATH = 'content'
 
+# Set the extension that the sources will have
+SRC_EXT = 'md'
+
 # Set the path to the static content directory, it will be copied as-is to OUTPUT_PATH/static
 STATIC_PATH = 'static'
 
