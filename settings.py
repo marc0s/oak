@@ -32,7 +32,14 @@ TEMPLATES = {
     'index': 'index.jinja', # the template will receive a list with the last N links to individual pages
     'archive': 'archive.jinja', # the template will receive a full list of individual pages
     'post': 'post.jinja', # the template will receive ...
-    'tags': 'tags.jinja', # the template will receive a list of tags
+    'taglist': 'tags.jinja', # the template will receive a list of tags
+    'tag': 'tag.jinja', # the template for one tag
+}
+
+HTMLS = {
+    'index': 'index.html',
+    'taglist': 'tags.html',
+    'tag': 'tag/%s.html',
 }
 
 # Wheter to generate a 'tags' index page or not (True or False)

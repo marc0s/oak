@@ -9,6 +9,11 @@ from optparse import OptionParser
 from oak import Processor, Post
 import settings
 
+def writefile(filename, content):
+    outfile = codecs.open(filename, mode='w', encoding='utf-8')
+    outfile.write(content)
+    outfile.close()
+
 def main(argv):
     parser = OptionParser(usage="%prog [OPTIONS]", version="%prog 0.1")
     parser.add_option("-g", "--generate", action = "store_true",
@@ -76,14 +81,15 @@ def main(argv):
                 os.makedirs(path)
 
             output = proc.render(settings.TEMPLATES['post'], post.__dict__())
-            # TODO probably let the processor handle the writing of the output
             print(" * generating output file in %s" % (destinationfile,))
-            outfile = codecs.open(destinationfile, mode='w', encoding='utf-8')
-            outfile.write(output)
-            outfile.close()
+            writefile(destinationfile, output)
         # ------ TAGS INDEX ------
-        # tagfile = proc.render(settings.TEMPLATES['tags'], tags)
-        
+        # TODO FIX the paths!! (add a new var in settings.py?)
+        tagfile = proc.render(settings.TEMPLATES['taglist'], {'tags': tags.keys()})
+        writefile(settings.HTMLS['taglist'], tagfile)
+        for t in tags.keys():
+            f = proc.render(settings.TEMPLATES['tag'], {'tag': t, 'posts': tags[t]})
+            writefile(S.join([destination] + [settings.HTMLS['tag'] % (t,)]), f)
         # ------ POSTS INDEX ------
         # index = proc.render(settings.TEMPLATES['index'], posts)
         print(tags)
