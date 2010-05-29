@@ -41,6 +41,12 @@ class Post(object):
         self.metadata = PostMetadata(self.f)
         self.post = self.f.split(HEADER_MARK, 2)[-1]
 
+    def set_url(self, url):
+        self.url = url
+
+    def get_url(self):
+        return self.url
+
     def get_post(self):
         return self.post
 
@@ -49,7 +55,8 @@ class Post(object):
 
     def __dict__(self):
         d = {
-            'post': self.get_post()
+            'post': self.get_post(),
+            'url': self.get_url(),
         }
         d.update(self.metadata.__dict__())
         return d
