@@ -7,10 +7,14 @@ import markdown
 import codecs
 
 class Processor(object):
+    """This class is the one responsible for processing the posts sources
+    and generate the resulting HTML code.
+    """
     def __init__(self, tpl_path):
         self.env = Environment(loader=FileSystemLoader(tpl_path))
 
     def render(self, tpl_name, d, output=None):
+        # TODO be able to choose the markup language: Markdown, reST, Textile
         # pre-process markdown first
         if d.get('post'):
             md = markdown.Markdown()
