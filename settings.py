@@ -5,11 +5,20 @@
 # Set the default author name for the blog
 AUTHOR = 'Marcos'
 
+# URL prefixes
+PREFIX = '' # Empty for / base path, /foo for foo base path
+ARCHIVE_PREFIX = 'archive'
+TAGS_PREFIX = 'tag'
+
 # Set the path to the directory where the contents will be created
 CONTENT_PATH = 'content'
 
 # Set the extension that the sources will have
 SRC_EXT = 'md'
+
+# Set the format of the post file name
+# UNUSED
+POST_FILE_FORMAT = "%Y-%m-%s.html"
 
 # Set the path to the static content directory, it will be copied as-is to OUTPUT_PATH/static
 STATIC_PATH = 'static'
@@ -39,10 +48,10 @@ TEMPLATES = {
 HTMLS = {
     'index': 'index.html',
     'taglist': 'tags.html',
-    'tag': 'tag/%s.html',
+#    'tag': '%s/%%s.html' % (TAGS_PREFIX,),
 }
 
-# Wheter to generate a 'tags' index page or not (True or False)
+# Wether to generate a 'tags' index page or not (True or False)
 GENERATE_TAGS = True
 
 # This is a dict with the default options for posts, which can be overriden
@@ -53,3 +62,5 @@ POST_DEFAULTS = {
     'layout': 'post',
     'tags': [],
 }
+
+
