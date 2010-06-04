@@ -5,6 +5,9 @@
 # Set the default author name for the blog
 AUTHOR = 'Marcos'
 
+# Set the blog title
+BLOG_TITLE = 'marc0s.blog'
+
 # URL prefixes
 PREFIX = '' # Empty for / base path, /foo for foo base path
 ARCHIVE_PREFIX = 'archive'
