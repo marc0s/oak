@@ -5,6 +5,7 @@ import os
 import glob
 import codecs
 import logging
+import shutil
 
 from optparse import OptionParser
 from oak import Processor, Post
@@ -18,12 +19,12 @@ LOG_LEVELS = {'debug': logging.DEBUG,
           'error': logging.ERROR,
           'critical': logging.CRITICAL}
 
-# TODO FIX paths when -d option is supplied (remove os.getcwdu())
+# TODO FIX paths when -d option is supplied (remove os.getcwdu() calls)
 
 def postfilepath(filename):
     year, month = filename.split('-')[:2]
     newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-    return os.path.sep.join([os.getcwdu(), settings.STATIC_PATH, year, month, newfilename])
+    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, year, month, newfilename])
 
 def postfileurl(filename):
     year, month = filename.split('-')[:2]
@@ -31,11 +32,20 @@ def postfileurl(filename):
     postfileurl = os.path.sep.join([settings.PREFIX, year, month, newfilename])
     return postfileurl
 
+def tagindexfilepath():
+    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, settings.HTMLS['taglist']])
+
+def tagindexurl():
+    return os.path.sep.join([settings.PREFIX, settings.HTMLS['taglist']])
+
 def tagfilepath(tagname):
-    return os.path.sep.join([os.getcwdu(), settings.STATIC_PATH, settings.TAGS_PREFIX, "%s.html" % (tagname,)])
+    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, settings.TAGS_PREFIX, "%s.html" % (tagname,)])
 
 def tagfileurl(tagname):
     return os.path.sep.join([settings.PREFIX, settings.TAGS_PREFIX, "%s" % (tagname,)])
+
+def indexfilepath():
+    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, settings.HTMLS['index']])
 
 def writefile(filename, content):
     outfile = codecs.open(filename, mode='w', encoding='utf-8')
@@ -43,10 +53,11 @@ def writefile(filename, content):
     outfile.close()
 
 def main(argv):
-    parser = OptionParser(usage="%prog [OPTIONS]", version="%prog 0.1")
-    parser.add_option("-g", "--generate", action = "store_true", dest = "generate", default = False, help = "Generate the source for your site.")
-    parser.add_option("-l", "--layout", dest = "layout", default = settings.DEFAULT_LAYOUT, help="Set the layout to use")
-    parser.add_option("-d", "--destination", dest="destination", default = settings.OUTPUT_PATH, help="Set the destination of the output")
+    parser = OptionParser(usage="%prog [OPTIONS]", version="%prog 0.1-alpha")
+    parser.add_option("-i", "--init", action="store_true", dest="init", default=False, help="Initialize the environment.")
+    parser.add_option("-g", "--generate", action="store_true", dest="generate", default=False, help = "Generate the source for your site.")
+    parser.add_option("-l", "--layout", dest="layout", default=settings.DEFAULT_LAYOUT, help="Set the layout to use")
+    parser.add_option("-d", "--destination", dest="destination", default=settings.OUTPUT_PATH, help="Set the destination of the output")
     parser.add_option("--loglevel", dest="loglevel", default="warning", help="Set the log output level")
 
     (options, args) = parser.parse_args()
@@ -68,13 +79,18 @@ def main(argv):
 
     S = os.path.sep
 
-    if options.generate:
+    if options.init:
+        if not os.path.exists(destination):
+            logger.error("Destination path does not exists. Exiting.")
+        logger.error("Not implemented :)")
+    elif options.generate:
         # We have to generate lot of things here :)
         # First of all we have to render all the posts
         # At the same time (to save loops) we'll cache the different
         # tags and authors
         # Then we have to create the tags page
         # Also we have to create the index and archive pages
+        # And last but not least, we have to copy the static content
 
         tags = {} # { 'tag': [post1, post2, ..., postn], ... }
         authors = {} # {'author': [post1, post2, ..., postn], ...}
@@ -121,13 +137,22 @@ def main(argv):
             writefile(postfilepath(filename), output)
         # ------ TAGS INDEX ------
         tagfile = proc.render(settings.TEMPLATES['taglist'], {'tags': tags.keys()})
-        writefile(settings.HTMLS['taglist'], tagfile)
+        writefile(tagindexfilepath(), tagfile)
         for t in tags.keys():
             f = proc.render(settings.TEMPLATES['tag'], {'tag': t, 'posts': tags[t]})
             logger.info("Generating tag page for %s in %s" % (t, tagfilepath(t)))
             writefile(tagfilepath(t), f)
+
         # ------ POSTS INDEX ------
-        # index = proc.render(settings.TEMPLATES['index'], posts)
+        index = proc.render(settings.TEMPLATES['index'], {'posts': posts, 'title': settings.BLOG_TITLE})
+        logger.info("Generating index page at %s" % (indexfilepath()),)
+        writefile(indexfilepath(), index)
+        # ------ COPY static content ------
+        # TODO allow to overwrite contents
+        static_dst = S.join([destination, 'static'])
+        if not os.path.exists(static_dst):
+            shutil.copytree(settings.STATIC_PATH, static_dst)
+
         logger.debug("Read tags: %s" % (tags,))
         logger.debug("Read authors: %s" % (authors,))
         logger.debug("Read posts: %s" % (posts,))
