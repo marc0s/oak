@@ -1,11 +1,8 @@
 {% extends "base.jinja" %}
 {% block body %}
-{% markdown %}
-Body
-====
-
-1. one
-2. two 
-
-{% endmarkdown %}
+<ul>
+{% for p in posts %}
+<li><a href="{{ p.get_url() }}">{{ p.get_url() }}</a></li>
+{% endfor %}
+</ul>
 {% endblock body %}
