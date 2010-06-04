@@ -5,6 +5,17 @@ Oak is a simple blog generator. The goal is to have a blog backed
 up by git (so the content gets versioned) and that the blog itself
 is all made up by static content.
 
+Status
+------
+
+Oak is alpha software, still under development. This is a preview
+release for friends and people who might be interested in it.
+
+Lot of thinks are still left: a decent set of templates, code
+cleanup, the git hooks (although there are plenty of examples
+around), ...
+
+
 Design
 ------
 
