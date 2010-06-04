@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# This hook is called every time a change is commited.
+# It changes to the directory where the live site is 
+# served from and pulls the change from the repo
+
+# CHANGE $HOME/www to the path of your live site
+cd $HOME/www || exit
+unset GIT_DIR
+# CHANGE hub with the name of your origin
+git pull hub master
+
+exec git-update-server-info
+

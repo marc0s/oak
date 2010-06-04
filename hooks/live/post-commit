@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# This script gets called whenever a commit is done in the *live* repo
+# With it we prevent to have unsynchronized content, in case we update
+# the site directly in the live site
+
+# CHANGE hub with the name of your origin
+git push hub
+
