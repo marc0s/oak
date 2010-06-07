@@ -112,17 +112,16 @@ def main(argv):
             newfilename = "%s.html" % (os.path.splitext(filename)[0],)
             logger.info("Processing %s..." % (filename,))
             post = Post.Post(f)
-            post.set_url(postfileurl(newfilename))
+            post['url'] = postfileurl(newfilename)
             posts.append(post)
-            # posts[filename] = post.get_metadata().__dict__()
             # cache the tags of the current post
-            for t in post.get_metadata().__dict__()['tags']:
+            for t in post['metadata']['tags']:
                 if t not in tags.keys():
                     tags[t] = [postfileurl(newfilename)]
                 else:
                     tags[t].append(postfileurl(newfilename))
             # cache the author of the current post
-            author = post.get_metadata().__dict__()['author']
+            author = post['metadata']['author']
             if author not in authors.keys():
                 authors[author] = [postfileurl(newfilename)]
             else:
@@ -132,7 +131,7 @@ def main(argv):
             if not os.path.exists(path) or not os.path.isdir(path):
                 logger.debug("Output directory not found, creating")
                 os.makedirs(path)
-            output = proc.render(settings.TEMPLATES['post'], post.__dict__())
+            output = proc.render(settings.TEMPLATES['post'], post)
             logger.info("Generating output file in %s" % (postfilepath(filename),))
             writefile(postfilepath(filename), output)
         # ------ TAGS INDEX ------

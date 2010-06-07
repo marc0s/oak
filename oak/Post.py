@@ -5,9 +5,9 @@ import codecs
 
 HEADER_MARK = '---'
 
-class Post(object):
+class Post(dict):
     """
-    Dummy class to hold the contents of a post file.
+    A class to hold the contents of a post file.
     A post file is a text file which must contain a YAML header
     defining its metadata, and it must be the first content
     of the file, for example:
@@ -38,30 +38,10 @@ class Post(object):
         self.f = _f.read()
         if not self.f.startswith(HEADER_MARK):
             raise
-        self.metadata = PostMetadata(self.f)
-        self.post = self.f.split(HEADER_MARK, 2)[-1]
+        self['metadata'] = PostMetadata(self.f)
+        self['raw'] = self.f.split(HEADER_MARK, 2)[-1]
 
-    def set_url(self, url):
-        self.url = url
-
-    def get_url(self):
-        return self.url
-
-    def get_post(self):
-        return self.post
-
-    def get_metadata(self):
-        return self.metadata
-
-    def __dict__(self):
-        d = {
-            'post': self.get_post(),
-            'url': self.get_url(),
-        }
-        d.update(self.metadata.__dict__())
-        return d
-
-class PostMetadata(object):
+class PostMetadata(dict):
     
     def __init__(self, metadata):
         """
@@ -71,8 +51,5 @@ class PostMetadata(object):
             metadata = metadata.split(HEADER_MARK, 2)[1]
         else:
             raise
-        self.metadata = yaml.load(metadata)
-
-    def __dict__(self):
-        return self.metadata
+        self.update(yaml.load(metadata))
 

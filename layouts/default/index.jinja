@@ -2,7 +2,7 @@
 {% block body %}
 <ul>
 {% for p in posts %}
-<li><a href="{{ p.get_url() }}">{{ p.get_url() }}</a></li>
+<li><a href="{{ p.url }}">{{ p.url }}</a></li>
 {% endfor %}
 </ul>
 {% endblock body %}

@@ -6,7 +6,7 @@
   {{ post }}
   </div>
   <div class="pmetadata">
-  Created on {{ pub_date }} by {{ author }}. Tagged as {{ tags|join(', ') }}.
+  Created on {{ metadata.pub_date }} by {{ metadata.author }}. Tagged as {{ metadata.tags|join(', ') }}.
   </div>
 </div>
 {% endblock body %}
