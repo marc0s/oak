@@ -21,10 +21,10 @@ LOG_LEVELS = {'debug': logging.DEBUG,
 
 # TODO FIX paths when -d option is supplied (remove os.getcwdu() calls)
 
-def postfilepath(filename):
+def postfilepath(filename, destination):
     year, month = filename.split('-')[:2]
     newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, year, month, newfilename])
+    return os.path.sep.join([destination, year, month, newfilename])
 
 def postfileurl(filename):
     year, month = filename.split('-')[:2]
@@ -32,20 +32,22 @@ def postfileurl(filename):
     postfileurl = os.path.sep.join([settings.PREFIX, year, month, newfilename])
     return postfileurl
 
-def tagindexfilepath():
-    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, settings.HTMLS['taglist']])
+def tagindexfilepath(destination):
+    return os.path.sep.join([destination, settings.HTMLS['taglist']])
 
 def tagindexurl():
     return os.path.sep.join([settings.PREFIX, settings.HTMLS['taglist']])
 
-def tagfilepath(tagname):
-    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, settings.TAGS_PREFIX, "%s.html" % (tagname,)])
+def tagfilespath(destination):
+    return os.path.sep.join([destination, settings.TAGS_PREFIX])
+def tagfilepath(tagname, destination):
+    return os.path.sep.join([tagfilespath(destination), "%s.html" % (tagname,)])
 
 def tagfileurl(tagname):
     return os.path.sep.join([settings.PREFIX, settings.TAGS_PREFIX, "%s" % (tagname,)])
 
-def indexfilepath():
-    return os.path.sep.join([os.getcwdu(), settings.OUTPUT_PATH, settings.HTMLS['index']])
+def indexfilepath(destination):
+    return os.path.sep.join([destination, settings.HTMLS['index']])
 
 def writefile(filename, content):
     outfile = codecs.open(filename, mode='w', encoding='utf-8')
@@ -65,7 +67,7 @@ def main(argv):
     cwd = os.getcwdu()
     content = os.path.sep.join([cwd, settings.CONTENT_PATH])
     templates = os.path.sep.join([cwd, settings.LAYOUTS_PATH, options.layout])
-    destination = options.destination
+    destination = os.path.abspath(options.destination)
     loglevel = LOG_LEVELS[options.loglevel]
 
     # set up logging
@@ -108,7 +110,7 @@ def main(argv):
         for f in glob.glob("%s/*.%s" % (content,settings.SRC_EXT)):
             filename = os.path.basename(f)
             # TODO add sanity check on source filename (count of - ...)
-            path = S.join([destination] + filename.split('-')[:2])
+            post_path = S.join([destination] + filename.split('-')[:2])
             newfilename = "%s.html" % (os.path.splitext(filename)[0],)
             logger.info("Processing %s..." % (filename,))
             post = Post.Post(f)
@@ -128,24 +130,27 @@ def main(argv):
                 authors[author].append(postfileurl(newfilename))
 
             # make sure we have the final path created
-            if not os.path.exists(path) or not os.path.isdir(path):
+            if not os.path.exists(post_path) or not os.path.isdir(post_path):
                 logger.debug("Output directory not found, creating")
-                os.makedirs(path)
+                os.makedirs(post_path)
             output = proc.render(settings.TEMPLATES['post'], post)
-            logger.info("Generating output file in %s" % (postfilepath(filename),))
-            writefile(postfilepath(filename), output)
+            logger.info("Generating output file in %s" % (postfilepath(filename,destination),))
+            writefile(postfilepath(filename, destination), output)
         # ------ TAGS INDEX ------
+        if not os.path.exists(tagfilespath(destination)) or not os.path.isdir(tagfilespath(destination)):
+            logger.debug("Tag files directory not found, creating")
+            os.makedirs(tagfilespath(destination))
         tagfile = proc.render(settings.TEMPLATES['taglist'], {'tags': tags.keys()})
-        writefile(tagindexfilepath(), tagfile)
+        writefile(tagindexfilepath(destination), tagfile)
         for t in tags.keys():
             f = proc.render(settings.TEMPLATES['tag'], {'tag': t, 'posts': tags[t]})
-            logger.info("Generating tag page for %s in %s" % (t, tagfilepath(t)))
-            writefile(tagfilepath(t), f)
+            logger.info("Generating tag page for %s in %s" % (t, tagfilepath(t, destination)))
+            writefile(tagfilepath(t, destination), f)
 
         # ------ POSTS INDEX ------
         index = proc.render(settings.TEMPLATES['index'], {'posts': posts, 'title': settings.BLOG_TITLE})
-        logger.info("Generating index page at %s" % (indexfilepath()),)
-        writefile(indexfilepath(), index)
+        logger.info("Generating index page at %s" % (indexfilepath(destination)),)
+        writefile(indexfilepath(destination), index)
         # ------ COPY static content ------
         # TODO allow to overwrite contents
         static_dst = S.join([destination, 'static'])
