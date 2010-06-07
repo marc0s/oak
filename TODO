@@ -1,0 +1,7 @@
+TODO
+====
+
+* Create more and better layouts
+* Implement the --init option
+* Create a script for extracting posts from wordpress (using python html2text)
+
