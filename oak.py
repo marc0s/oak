@@ -19,8 +19,6 @@ LOG_LEVELS = {'debug': logging.DEBUG,
           'error': logging.ERROR,
           'critical': logging.CRITICAL}
 
-# TODO FIX paths when -d option is supplied (remove os.getcwdu() calls)
-
 def postfilepath(filename, destination):
     year, month = filename.split('-')[:2]
     newfilename = "%s.html" % (os.path.splitext(filename)[0],)
