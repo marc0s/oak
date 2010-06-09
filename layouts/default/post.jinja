@@ -2,10 +2,10 @@
 {% block body %}
 <div class="post">
   <div class="postbody">
-  {{ post }}
+  {{ post.html }}
   </div>
   <div class="pmetadata">
-  Created on {{ metadata.pub_date }} by {{ metadata.author }}. Tagged as {{ metadata.tags|join(', ') }}.
+  Created on {{ post.metadata.pub_date }} by {{ post.metadata.author }}. Tagged as {{ post.metadata.tags|join(', ') }}.
   </div>
 </div>
 {% endblock body %}
