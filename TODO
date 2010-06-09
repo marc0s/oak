@@ -7,7 +7,6 @@ In no particular order...
 * Implement the --init option
 * Create a script for extracting posts from wordpress (using python html2text)
 * Explain how to start using oak
-* Define the values passed to templates
 * Add an archive page
 * Add an authors page and a page per author
 * Limit the posts shown on front page
