@@ -98,7 +98,11 @@ def main(argv):
 
         # The master Processor
         proc = Processor.Processor(templates)
-
+        # The dict passed to templates
+        tpl_vars = {
+            'site_path': settings.PREFIX,
+            'blog_title': settings.BLOG_TITLE,
+        }
         # ------ POSTS ------- 
         # Let's iterate through all posts sources and render them
         logger.info("Rendering posts...")
@@ -131,9 +135,13 @@ def main(argv):
             if not os.path.exists(post_path) or not os.path.isdir(post_path):
                 logger.debug("Output directory not found, creating")
                 os.makedirs(post_path)
-            output = proc.render(settings.TEMPLATES['post'], post)
+            tpl_vars.update({'post': post})
+            logger.debug("tpl_vars: %s" % (tpl_vars,))
+            output = proc.render(settings.TEMPLATES['post'], tpl_vars)
             logger.info("Generating output file in %s" % (postfilepath(filename,destination),))
             writefile(postfilepath(filename, destination), output)
+            tpl_vars.pop('post') # remove the aded key
+
         # ------ TAGS INDEX ------
         if not os.path.exists(tagfilespath(destination)) or not os.path.isdir(tagfilespath(destination)):
             logger.debug("Tag files directory not found, creating")
@@ -141,14 +149,21 @@ def main(argv):
         tagfile = proc.render(settings.TEMPLATES['taglist'], {'tags': tags.keys()})
         writefile(tagindexfilepath(destination), tagfile)
         for t in tags.keys():
-            f = proc.render(settings.TEMPLATES['tag'], {'tag': t, 'posts': tags[t]})
+            tpl_vars.update({'tag': t, 'posts': tags[t]})
+            f = proc.render(settings.TEMPLATES['tag'], tpl_vars)
             logger.info("Generating tag page for %s in %s" % (t, tagfilepath(t, destination)))
             writefile(tagfilepath(t, destination), f)
+            # remove added keys
+            tpl_vars.pop('tag') 
+            tpl_vars.pop('posts')
 
         # ------ POSTS INDEX ------
-        index = proc.render(settings.TEMPLATES['index'], {'posts': posts, 'title': settings.BLOG_TITLE})
+        tpl_vars.update({'posts': posts})
+        index = proc.render(settings.TEMPLATES['index'], tpl_vars)
         logger.info("Generating index page at %s" % (indexfilepath(destination)),)
         writefile(indexfilepath(destination), index)
+        tpl_vars.pop('posts') # remove added key
+
         # ------ COPY static content ------
         # TODO allow to overwrite contents
         static_dst = S.join([destination, 'static'])

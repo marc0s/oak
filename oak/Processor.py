@@ -16,10 +16,10 @@ class Processor(object):
     def render(self, tpl_name, d, output=None):
         # TODO be able to choose the markup language: Markdown, reST, Textile
         # pre-process markdown first
-        if d.get('raw'):
+        if d.get('post'):
             md = markdown.Markdown()
             md.preprocessors.insert(0, 'text', CodeBlockPreprocessor())
-            d['post'] = md.convert(d.get('raw'))
+            d['post']['html'] = md.convert(d.get('post')['raw'])
         if not output:
             return self.env.get_template(tpl_name).render(d)
         return False
