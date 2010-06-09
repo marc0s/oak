@@ -11,4 +11,5 @@ In no particular order...
 * Add an archive page
 * Add an authors page and a page per author
 * Limit the posts shown on front page
+* Add some option to not re-generate already generated contents (or do that by default).
 
