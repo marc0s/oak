@@ -15,7 +15,7 @@ class Post(dict):
     ---
       title: 'post title'
       author: 'post author name'
-      pub_date: '2010-05-2 17:00:00'
+      pub_date: '2010-05-02 17:00:00'
     ---
     
     Post title
