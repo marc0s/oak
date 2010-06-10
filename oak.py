@@ -160,6 +160,10 @@ def main(argv):
             tpl_vars.pop('tag') 
 
         # ------ POSTS INDEX ------
+        # let's sort the posts in chronological order
+        posts.sort(lambda x, y: cmp(x['metadata']['pub_date'], y['metadata']['pub_date']))
+        if settings.POSTS_SORT_REVERSE:
+            posts.reverse()
         tpl_vars.update({'posts': posts})
         index = proc.render(settings.TEMPLATES['index'], tpl_vars)
         logger.info("Generating index page at %s" % (indexfilepath(destination)),)

@@ -38,6 +38,9 @@ DEFAULT_LAYOUT = 'default'
 # Set how many posts will be shown in the frontpage
 POSTS_COUNT = 10
 
+# By default, posts are sort from older to newer, set to True to invert this behaviour (newer first)
+POSTS_SORT_REVERSE = True
+
 # The names of the templates
 TEMPLATES = {
     '*': 'base.jinja', # for unknown page types
