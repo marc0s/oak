@@ -1,0 +1,94 @@
+# Information on creating templates for oak
+
+This file contains the necessary information for designing templates for
+the oak blogging system..
+
+## Templating system
+
+oak uses [Jinja2](http://jinja.pocoo.org) for processing templates. You can 
+read the [excellent documentation](http://jinja.pocoo.org/2/documentation) 
+provided by the Jinja developers.
+
+## Data available on templates
+
+An important thing on designing templates is to know which data is 
+available in the template.
+
+This data is not always the same, it depends on the type of content
+which is going to be processed: a post, the front page, ...
+
+It will always be a python dict, here we show you what this dict contains
+depending on which content is going to be processed. There are a few keys
+which are available whatever content is going to be processed, and other
+keys which are only available to some types of content.
+
+### All type of content
+
+    {
+      'site_path': settings.PREFIX or '/',
+      'blog_title': settings.BLOG_TITLE,
+    }
+
+### Post
+
+    {
+      'post': <Post object>
+    }
+
+### Front page
+
+    {
+      'posts': [<Post object>, ...]
+    }
+
+### Tag
+
+    {
+      'tag': <Tag object>,
+    }
+
+### Tags list
+
+    {
+      'tags': { 'tagname': <Tag object>, ...},
+    }
+
+Remember that `Post` and `Tag` objects are classic Python `dict` objects, we've
+just sublcassed `dict` for creating them.
+
+## The contents of Post, PostMetadata and Tag
+
+Here we describe the contents of this objects.
+
+### Post
+
+    {
+      'raw': 'markdown string read from the file',
+      'html': 'the processed markdown',
+      'metadata': <PostMetadata object>,
+      'url': 'http://example.com/blog/post/file.html',
+    }
+
+### PostMetadata
+
+`PostMetadata` has no fixed content, the contents of the post header are
+parsed and added to the metadata, so you can find some unusual content
+here. Nevertheless, you'll always find the following contents:
+
+    {
+      'title': 'Post title',
+      'author': 'Defaults to settings.AUTHOR',
+      'layout': 'Not used now',
+      'tags': ['tag1', 'tag2', ...],
+    }
+
+This contents are set by default in `settings.py`, you can always check
+there which keys will always have a `PostMetadata` object.
+
+### Tag
+
+    {
+        'tag': 'The_tag_itself',
+        'url': 'http://example.com/tags/tag.html',
+        'posts': [<Post object>, ...],
+    }
