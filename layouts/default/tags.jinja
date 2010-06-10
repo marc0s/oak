@@ -2,8 +2,8 @@
 {% block body %}
 <h1>Tag list</h1>
 <div id="tags">
-    {% for t in tags %}
-        <a href="tag/{{t}}.html">{{t}}</a>
+    {% for k,v in tags.iteritems() %}
+        <a href="{{v.url}}">{{v.tag}}</a> ({{v.count}})
     {% endfor %}
 </div>
 {% endblock body %}

@@ -1,10 +1,10 @@
 {% extends "base.jinja" %}
 {% block body %}
-<h1>Posts tagged with {{ tag }}</h1>
+<h1>Posts tagged with {{ tag.tag }}</h1>
 <div id="posts">
     <ul>
-    {% for p in posts|sort %}
-        <li><a href="{{ p }}">{{ p }}</a></li>
+    {% for p in tag.posts %}
+        <li><a href="{{ p.url }}">{{ p.metadata.title }}</a></li>
     {% endfor %}
     </li>
 </div>

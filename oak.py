@@ -8,7 +8,7 @@ import logging
 import shutil
 
 from optparse import OptionParser
-from oak import Processor, Post
+from oak import Processor, Post, Tag
 
 import settings
 
@@ -38,11 +38,12 @@ def tagindexurl():
 
 def tagfilespath(destination):
     return os.path.sep.join([destination, settings.TAGS_PREFIX])
+
 def tagfilepath(tagname, destination):
     return os.path.sep.join([tagfilespath(destination), "%s.html" % (tagname,)])
 
 def tagfileurl(tagname):
-    return os.path.sep.join([settings.PREFIX, settings.TAGS_PREFIX, "%s" % (tagname,)])
+    return os.path.sep.join([settings.PREFIX, settings.TAGS_PREFIX, "%s.html" % (tagname,)])
 
 def indexfilepath(destination):
     return os.path.sep.join([destination, settings.HTMLS['index']])
@@ -92,15 +93,15 @@ def main(argv):
         # Also we have to create the index and archive pages
         # And last but not least, we have to copy the static content
 
-        tags = {} # { 'tag': [post1, post2, ..., postn], ... }
-        authors = {} # {'author': [post1, post2, ..., postn], ...}
-        posts = [] # [Post1, Post2, ..., PostN] 
+        tags = {} # {'tagname': <Tag object>, ...} 
+        authors = {} # {'author': [<Post object>, ...], ...}
+        posts = [] # [<Post object>, ...] 
 
         # The master Processor
         proc = Processor.Processor(templates)
         # The dict passed to templates
         tpl_vars = {
-            'site_path': settings.PREFIX,
+            'site_path': settings.PREFIX or '/', # if there is no prefix, use / 
             'blog_title': settings.BLOG_TITLE,
         }
         # ------ POSTS ------- 
@@ -121,15 +122,15 @@ def main(argv):
             # cache the tags of the current post
             for t in post['metadata']['tags']:
                 if t not in tags.keys():
-                    tags[t] = [postfileurl(newfilename)]
+                    tags[t] = Tag.Tag(tag=t, url=tagfileurl(t), posts=[post])
                 else:
-                    tags[t].append(postfileurl(newfilename))
+                    tags[t]['posts'].append(post)
             # cache the author of the current post
             author = post['metadata']['author']
             if author not in authors.keys():
-                authors[author] = [postfileurl(newfilename)]
+                authors[author] = [post]
             else:
-                authors[author].append(postfileurl(newfilename))
+                authors[author].append(post)
 
             # make sure we have the final path created
             if not os.path.exists(post_path) or not os.path.isdir(post_path):
@@ -146,16 +147,17 @@ def main(argv):
         if not os.path.exists(tagfilespath(destination)) or not os.path.isdir(tagfilespath(destination)):
             logger.debug("Tag files directory not found, creating")
             os.makedirs(tagfilespath(destination))
-        tagfile = proc.render(settings.TEMPLATES['taglist'], {'tags': tags.keys()})
+        tpl_vars.update({'tags': tags})
+        tagfile = proc.render(settings.TEMPLATES['taglist'], tpl_vars)
         writefile(tagindexfilepath(destination), tagfile)
+        tpl_vars.pop('tags')
         for t in tags.keys():
-            tpl_vars.update({'tag': t, 'posts': tags[t]})
+            tpl_vars.update({'tag': tags[t]})
             f = proc.render(settings.TEMPLATES['tag'], tpl_vars)
             logger.info("Generating tag page for %s in %s" % (t, tagfilepath(t, destination)))
             writefile(tagfilepath(t, destination), f)
             # remove added keys
             tpl_vars.pop('tag') 
-            tpl_vars.pop('posts')
 
         # ------ POSTS INDEX ------
         tpl_vars.update({'posts': posts})
@@ -169,10 +171,6 @@ def main(argv):
         static_dst = S.join([destination, 'static'])
         if not os.path.exists(static_dst):
             shutil.copytree(settings.STATIC_PATH, static_dst)
-
-        logger.debug("Read tags: %s" % (tags,))
-        logger.debug("Read authors: %s" % (authors,))
-        logger.debug("Read posts: %s" % (posts,))
 
 if __name__ == "__main__":
     main(sys.argv[1:])
