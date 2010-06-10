@@ -164,7 +164,7 @@ def main(argv):
         posts.sort(lambda x, y: cmp(x['metadata']['pub_date'], y['metadata']['pub_date']))
         if settings.POSTS_SORT_REVERSE:
             posts.reverse()
-        tpl_vars.update({'posts': posts})
+        tpl_vars.update({'posts': posts[:settings.POSTS_COUNT]})
         index = proc.render(settings.TEMPLATES['index'], tpl_vars)
         logger.info("Generating index page at %s" % (indexfilepath(destination)),)
         writefile(indexfilepath(destination), index)

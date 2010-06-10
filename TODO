@@ -9,7 +9,5 @@ In no particular order...
 * Explain how to start using oak
 * Add an archive page
 * Add an authors page and a page per author
-* Limit the posts shown on front page
 * Add some option to not re-generate already generated contents (or do that by default).
-* Provide sorted lists to templates
 

@@ -35,7 +35,7 @@ LAYOUTS_PATH = 'layouts'
 # Set the name of the default layout
 DEFAULT_LAYOUT = 'default'
 
-# Set how many posts will be shown in the frontpage
+# Set how many posts will be shown in the frontpage, set it to None to show them all
 POSTS_COUNT = 10
 
 # By default, posts are sort from older to newer, set to True to invert this behaviour (newer first)
