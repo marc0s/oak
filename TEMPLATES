@@ -83,7 +83,7 @@ here. Nevertheless, you'll always find the following contents:
     }
 
 This contents are set by default in `settings.py`, you can always check
-there which keys will always have a `PostMetadata` object.
+there which keys will always be available in a `PostMetadata` object.
 
 ### Tag
 
