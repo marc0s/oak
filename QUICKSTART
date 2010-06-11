@@ -1,0 +1,43 @@
+Quick Start for #oak
+====================
+
+Setup
+-----
+
+First of all, you must create the following directories.
+
+* site
+* site/tag
+* content
+* static
+
+You can do so:
+mkdir -p site/tag content
+
+In a next future this tasks will be done with the --init option of #oak.
+
+Start 
+-----
+
+Write your first post, you'll done it doing:
+
+* Creating a file under content, with filename according to this pattern:
+  YYYY-MM-post_title.md
+  Remember replace "post_title" by your desired finally post title.
+* Edit the created file with the content in the correct format, this is the sample and simple format:
+  ---
+    title: 'test post'
+    author: 'angel'
+    pub_date: '2010-06-11 11:05:00'
+    tags: ['test','oak']
+  ---
+
+  Test Post
+  =========
+
+  This is a simple test post.
+
+* run oak.py with the generate option
+  python oak.py -g
+
+* if all its ok, congratulations you now have your first post in your #oak blog!

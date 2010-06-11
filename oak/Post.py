@@ -16,6 +16,7 @@ class Post(dict):
       title: 'post title'
       author: 'post author name'
       pub_date: '2010-05-02 17:00:00'
+      tags: ['tag1','tag2',...]
     ---
     
     Post title
