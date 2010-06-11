@@ -12,7 +12,7 @@ First of all, you must create the following directories.
 * static
 
 You can do so:
-mkdir -p site/tag content
+mkdir -p site/tag content static
 
 In a next future this tasks will be done with the --init option of #oak.
 
@@ -41,3 +41,4 @@ Write your first post, you'll done it doing:
   python oak.py -g
 
 * if all its ok, congratulations you now have your first post in your #oak blog!
+
