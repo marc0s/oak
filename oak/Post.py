@@ -2,6 +2,7 @@
 
 import yaml
 import codecs
+import settings
 
 HEADER_MARK = '---'
 
@@ -36,11 +37,14 @@ class Post(dict):
             _f = codecs.open(f, mode='r', encoding='utf-8')
         except:
             raise Exception('Unable to open file. Hint: isn\'t it UTF-8 encoded?')
-
+        
+        # Set metadata to the app defaults
+        self['metadata'] = settings.POST_DEFAULTS
         self.f = _f.read()
         if not self.f.startswith(HEADER_MARK):
             raise Exception('Post file invalid, no header found.')
         
         _, metadata, self['raw'] = self.f.split(HEADER_MARK, 2)
-        self['metadata'] = yaml.load(metadata)
+        # update the metadata with the header's contents
+        self['metadata'].update(yaml.load(metadata))
 
