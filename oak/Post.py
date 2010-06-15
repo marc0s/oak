@@ -35,22 +35,12 @@ class Post(dict):
         try:
             _f = codecs.open(f, mode='r', encoding='utf-8')
         except:
-            raise
+            raise Exception('Unable to open file. Hint: isn\'t it UTF-8 encoded?')
+
         self.f = _f.read()
         if not self.f.startswith(HEADER_MARK):
-            raise
-        self['metadata'] = PostMetadata(self.f)
-        self['raw'] = self.f.split(HEADER_MARK, 2)[-1]
-
-class PostMetadata(dict):
-    
-    def __init__(self, metadata):
-        """
-        :param f: a string containing the full post's YAML header
-        """
-        if metadata.startswith(HEADER_MARK):
-            metadata = metadata.split(HEADER_MARK, 2)[1]
-        else:
-            raise
-        self.update(yaml.load(metadata))
+            raise Exception('Post file invalid, no header found.')
+        
+        _, metadata, self['raw'] = self.f.split(HEADER_MARK, 2)
+        self['metadata'] = yaml.load(metadata)
 
