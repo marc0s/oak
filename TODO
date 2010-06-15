@@ -4,7 +4,6 @@ TODO
 In no particular order...
 
 * Create more and better layouts
-* Implement the --init option
 * Create a script for extracting posts from wordpress (using python html2text)
 * Explain how to start using oak
 * Add an archive page

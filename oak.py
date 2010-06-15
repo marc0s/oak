@@ -82,8 +82,12 @@ def main(argv):
 
     if options.init:
         if not os.path.exists(destination):
-            logger.error("Destination path does not exists. Exiting.")
-        logger.error("Not implemented :)")
+            os.mkdirs(destination)
+        if not os.path.exists(content):
+            os.mkdirs(content)
+        # TODO fix that ugly hardcoded path!
+        if not os.path.exists("static"):
+            os.mkdirs("static")
     elif options.generate:
         # We have to generate lot of things here :)
         # First of all we have to render all the posts
