@@ -56,7 +56,7 @@ keys which are only available to some types of content.
 Remember that `Post` and `Tag` objects are classic Python `dict` objects, we've
 just sublcassed `dict` for creating them.
 
-## The contents of Post, PostMetadata and Tag
+## The contents of Post and Tag
 
 Here we describe the contents of this objects.
 
@@ -65,13 +65,21 @@ Here we describe the contents of this objects.
     {
       'raw': 'markdown string read from the file',
       'html': 'the processed markdown',
-      'metadata': <PostMetadata object>,
+      'metadata': {'metadata': 'foo', 'metadata2': 'bar', ...},
       'url': 'http://example.com/blog/post/file.html',
     }
 
-### PostMetadata
+### Tag
 
-`PostMetadata` has no fixed content, the contents of the post header are
+    {
+        'tag': 'The_tag_itself',
+        'url': 'http://example.com/tags/tag.html',
+        'posts': [<Post object>, ...],
+    }
+    
+### The metadata in a Post object
+
+The metadata has no fixed content, the contents of the post header are
 parsed and added to the metadata, so you can find some unusual content
 here. Nevertheless, you'll always find the following contents:
 
@@ -83,12 +91,5 @@ here. Nevertheless, you'll always find the following contents:
     }
 
 This contents are set by default in `settings.py`, you can always check
-there which keys will always be available in a `PostMetadata` object.
+there which keys will always be available in a the metadata.
 
-### Tag
-
-    {
-        'tag': 'The_tag_itself',
-        'url': 'http://example.com/tags/tag.html',
-        'posts': [<Post object>, ...],
-    }
