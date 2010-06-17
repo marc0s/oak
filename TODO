@@ -5,7 +5,6 @@ In no particular order...
 
 * Create more and better layouts
 * Create a script for extracting posts from wordpress (using python html2text)
-* Explain how to start using oak
 * Add an archive page
 * Add an authors page and a page per author
 * Add some option to not re-generate already generated contents (or do that by default).
