@@ -1,5 +1,6 @@
 {% extends "base.jinja" %}
 {% block body %}
+<div id="main">
 <div class="post">
   <div class="postbody">
   {{ post.html }}
@@ -7,5 +8,6 @@
   <div class="pmetadata">
   Created on {{ post.metadata.pub_date }} by {{ post.metadata.author }}. Tagged as {{ post.metadata.tags|join(', ') }}.
   </div>
+</div>
 </div>
 {% endblock body %}
