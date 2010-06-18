@@ -39,7 +39,7 @@ class Post(dict):
             raise Exception('Unable to open file. Hint: isn\'t it UTF-8 encoded?')
         
         # Set metadata to the app defaults
-        self['metadata'] = settings.POST_DEFAULTS
+        self['metadata'] = settings.POST_DEFAULTS.copy()
         self.f = _f.read()
         if not self.f.startswith(HEADER_MARK):
             raise Exception('Post file invalid, no header found.')
