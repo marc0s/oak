@@ -1,9 +1,11 @@
 {% extends "base.jinja" %}
 {% block body %}
-<h1>Tag list</h1>
-<div id="tags">
+<div id="main">
+    <h2>Tag list</h2>
+    <ul>
     {% for k,v in tags.iteritems() %}
-        <a href="{{v.url}}">{{v.tag}}</a> ({{v.count}})
+        <li><a href="{{v.url}}">{{v.tag}}</a> ({{tags|length}})</li>
     {% endfor %}
+    </ul>
 </div>
 {% endblock body %}
