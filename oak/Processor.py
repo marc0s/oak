@@ -5,6 +5,11 @@ from markdownprocessor import CodeBlockPreprocessor
 
 import markdown
 import codecs
+import time
+
+def datetimeformat(value, oformat='%Y-%m-%d', iformat="%Y-%m-%d %H:%M:%S"):
+    return time.strftime(oformat, time.strptime(value, iformat))
+
 
 class Processor(object):
     """This class is the one responsible for processing the posts sources
@@ -12,6 +17,7 @@ class Processor(object):
     """
     def __init__(self, tpl_path):
         self.env = Environment(loader=FileSystemLoader(tpl_path))
+        self.env.filters['datetimeformat'] = datetimeformat
 
     def render(self, tpl_name, d, output=None):
         # TODO be able to choose the markup language: Markdown, reST, Textile

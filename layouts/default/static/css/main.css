@@ -16,6 +16,7 @@ a:hover    { color: #888888; text-decoration: none; border-bottom: 1px solid  #8
 .title     { font-size: 200%; font-weight: normal; margin: 0 0 0 0.5ex; padding: 0.5ex; }
 .subtitle  { font-size: 50%; font-style: italic; margin-left: 1em; }
 .pmetadata { font-size: 80%; line-height: normal; text-align: right; }
-.powered   { font-size: 80%; line-height: normal; margin-left: 2em; }
+.powered   { font-size: 80%; line-height: normal; text-align: center; }
 .code      { margin: 0px; padding: 2px; padding-left: 10px; border: 1px solid #888888; background-color: #f8f8f8; }
+.date      { font-size: 80%; font-style: italic }
 

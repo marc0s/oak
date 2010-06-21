@@ -9,7 +9,8 @@
   {{ post.html }}
   </div>
   <div class="pmetadata">
-  Created on {{ post.metadata.pub_date }} by {{ post.metadata.author }}. Tagged as {{ post.metadata.tags|join(', ') }}.
+  <p>Created on <strong>{{ post.metadata.pub_date|datetimeformat }}</strong> by <strong>{{ post.metadata.author }}</strong>. </p>
+  <p>Tagged as {{ post.metadata.tags|join(', ') }}.</p>
   </div>
 </div>
 </div>
