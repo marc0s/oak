@@ -53,6 +53,31 @@ def writefile(filename, content):
     outfile.write(content)
     outfile.close()
 
+def copytree_(src, dst):
+    names = os.listdir(src)
+    if not os.path.exists(dst):
+        os.mkdir(dst)
+    for name in names:
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        try:
+            if os.path.isdir(srcname):
+                copytree_(srcname, dstname)
+            else:
+                shutil.copy2(srcname, dstname)
+        except (IOError, os.error), why:
+            raise Exception(why)
+    try:
+        shutil.copystat(src, dst)
+    except OSError, why:
+        raise Exception(why)
+
+def copystaticfiles(static, templates, destination):
+    copytree_(static, destination)
+    # just check if the template provides static files or not
+    if os.path.exists(templates) and os.path.isdir(templates):
+        copytree_(templates, destination)
+
 def main(argv):
     parser = OptionParser(usage="%prog [OPTIONS]", version="%prog 0.1-alpha")
     parser.add_option("-i", "--init", action="store_true", dest="init", default=False, help="Initialize the environment.")
@@ -85,9 +110,6 @@ def main(argv):
             os.makedirs(destination)
         if not os.path.exists(content):
             os.makedirs(content)
-        # TODO fix that ugly hardcoded path!
-        if not os.path.exists("static"):
-            os.makedirs("static")
     elif options.generate:
         # We have to generate lot of things here :)
         # First of all we have to render all the posts
@@ -175,10 +197,8 @@ def main(argv):
         tpl_vars.pop('posts') # remove added key
 
         # ------ COPY static content ------
-        # TODO allow to overwrite contents
-        static_dst = S.join([destination, 'static'])
-        if not os.path.exists(static_dst):
-            shutil.copytree(settings.STATIC_PATH, static_dst)
+        static_dst = S.join([destination, settings.STATIC_PATH])
+        copystaticfiles(settings.STATIC_PATH, S.join([templates, settings.STATIC_PATH]), static_dst)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
