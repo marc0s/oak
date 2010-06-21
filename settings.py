@@ -24,6 +24,7 @@ SRC_EXT = 'md'
 POST_FILE_FORMAT = "%Y-%m-%s.html"
 
 # Set the path to the static content directory, it will be copied as-is to OUTPUT_PATH/static
+# It will serve as the name for layout-relative static files (i.e.: layouts/foo/static)
 STATIC_PATH = 'static'
 
 # Set the path where the output will be generated
