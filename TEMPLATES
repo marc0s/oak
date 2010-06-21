@@ -9,6 +9,30 @@ oak uses [Jinja2](http://jinja.pocoo.org) for processing templates. You can
 read the [excellent documentation](http://jinja.pocoo.org/2/documentation) 
 provided by the Jinja developers.
 
+## Directory structure
+
+Template files are stored in the `layouts` directory. The files composing a
+template are stored inside another directory named after the template name.
+For example, the `default` template files are stored at `layouts/default`.
+
+## Files
+
+If you take a look at the `default` template directory you'll find the 
+following files:
+
+* base.jinja
+* index.jinja
+* post.jinja
+* tag.jinja
+* tags.jinja
+
+As you can see, the template files have the .jinja extension.
+
+You can as well create static content specific to your template, you 
+must save it at `layouts/yourlayout/static`. You can create as many
+directories as you want inside it. For example you may have one for
+CSS, another one for images, and so on.
+
 ## Data available on templates
 
 An important thing on designing templates is to know which data is 
