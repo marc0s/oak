@@ -82,12 +82,12 @@ def main(argv):
 
     if options.init:
         if not os.path.exists(destination):
-            os.mkdirs(destination)
+            os.makedirs(destination)
         if not os.path.exists(content):
-            os.mkdirs(content)
+            os.makedirs(content)
         # TODO fix that ugly hardcoded path!
         if not os.path.exists("static"):
-            os.mkdirs("static")
+            os.makedirs("static")
     elif options.generate:
         # We have to generate lot of things here :)
         # First of all we have to render all the posts
