@@ -8,7 +8,7 @@ import codecs
 import time
 
 def datetimeformat(value, oformat='%Y-%m-%d', iformat="%Y-%m-%d %H:%M:%S"):
-    return time.strftime(oformat, time.strptime(value, iformat))
+    return time.strftime(oformat, time.strptime(str(value), iformat))
 
 
 class Processor(object):
