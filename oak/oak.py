@@ -8,7 +8,8 @@ import logging
 import shutil
 
 from optparse import OptionParser
-from oak import Processor, Post, Tag
+from oak.models import Post, Tag
+from oak.processors import Processor
 
 import settings
 
@@ -111,7 +112,7 @@ def main(argv):
         if not os.path.exists(content):
             os.makedirs(content)
         if not os.path.exists("%s%s%s" % (destination, S, settings.STATIC)):
-            os.makedirs("%s%s%s" % (destination, S, settings.STATIC)
+            os.makedirs("%s%s%s" % (destination, S, settings.STATIC))
 
     elif options.generate:
         # We have to generate lot of things here :)
@@ -204,5 +205,7 @@ def main(argv):
         copystaticfiles(settings.STATIC_PATH, S.join([templates, settings.STATIC_PATH]), static_dst)
 
 if __name__ == "__main__":
+    import sys
+    print sys.path
     main(sys.argv[1:])
 

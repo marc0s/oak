@@ -2,7 +2,6 @@
 
 import yaml
 import codecs
-import settings
 
 HEADER_MARK = '---'
 
