@@ -111,7 +111,7 @@ def main(argv):
         if not os.path.exists(content):
             os.makedirs(content)
         if not os.path.exists("%s%s%s" % (destination, S, settings.STATIC)):
-            os.makedirs("%s%s%s" % (destination, S, settings.STATIC)
+            os.makedirs("%s%s%s" % (destination, S, settings.STATIC))
 
     elif options.generate:
         # We have to generate lot of things here :)
