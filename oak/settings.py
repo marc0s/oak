@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+FOO='dist'
+
 # Settings file for oak
 
 # Set the default author name for the blog

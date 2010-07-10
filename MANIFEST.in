@@ -1,3 +1,5 @@
-include *.txt
+include README VERSION TODO
 recursive-include oak *.py *.jinja *.css
+recursive-include bin *.py
+recursive-include bin/hooks *
 
