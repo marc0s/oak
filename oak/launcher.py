@@ -4,7 +4,7 @@ import sys
 import os
 import logging
 
-from optparse import OptionParser
+from optparse import OptionParser, OptionGroup
 
 from oak import Oak
 
@@ -40,27 +40,32 @@ class Launcher(object):
         return self.logger
         
     def run(self, argv=None):
-        parser = OptionParser(usage="%prog [OPTIONS]", version="%prog 0.1-alpha")
-        parser.add_option("-i", "--init", action="store_true", dest="init", default=False, help="Initialize the environment.")
+        parser = OptionParser(usage="%prog [OPTIONS]", version="%prog 0.1")
+        # parser.add_option("-i", "--init", action="store_true", dest="init", default=False, help="Initialize the environment.")
         parser.add_option("-g", "--generate", action="store_true", dest="generate", default=False, help = "Generate the source for your site.")
-        parser.add_option("-l", "--layout", dest="layout", default=settings.DEFAULT_LAYOUT, help="Set the layout to use")
-        parser.add_option("-d", "--destination", dest="destination", default=settings.OUTPUT_PATH, help="Set the destination of the output")
         parser.add_option("--loglevel", dest="loglevel", default="warning", help="Set the log output level")
+
+        group = OptionGroup(parser, "Output options (overriding settings.py)")
+        group.add_option("-l", "--layout", dest="layout", default=self.settings.DEFAULT_LAYOUT, help="Set the layout to use")
+        group.add_option("-d", "--destination", dest="destination", default=self.settings.OUTPUT_PATH, help="Set the destination of the output")
+        parser.add_option_group(group)
 
         (options, args) = parser.parse_args()
 
         logger = self.setup_logging(loglevel=options.loglevel)
 
-        oak = Oak(logger=logger, settings=settings)
 
-        if options.init:
-            oak.init(path=os.path.getcwdu())
-        elif options.generate:
+        #if options.init:
+        #    oak.init(path=os.path.getcwdu())
+        if options.generate:
             # override settings with commandline options
             if options.layout:
-                settings.DEFAULT_LAYOUT=options.layout
+                self.settings.DEFAULT_LAYOUT=options.layout
             if options.destination:
-                settings.OUTPUT_PATH=options.destination
+                selfsettings.OUTPUT_PATH=options.destination
+
+            # instantiate Oak with the given settings
+            oak = Oak(logger=logger, settings=self.settings)
             # call the generation process
             oak.generate()
         else:

@@ -10,6 +10,6 @@ except ImportError:
     sys.exit(1)
 
 if __name__ == '__main__':
-    launcher = oak.Launcher(settings=settings)
+    launcher = Launcher(settings=settings)
     launcher.run(sys.argv[1:])
 

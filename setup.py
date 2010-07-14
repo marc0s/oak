@@ -9,6 +9,8 @@ setup(
     author='marc0s',
     author_email='marc0s@fsfe.org',
     packages=['oak', 'oak.models', 'oak.processors', 'oak.utils'],
+    package_data={'oak': ['scripts/manage.py']},
+    scripts=['bin/oak-admin.py',],
     license='WTFPL',
     long_description=open('README').read(),
 )
