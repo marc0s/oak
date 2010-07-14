@@ -41,7 +41,6 @@ class Launcher(object):
         
     def run(self, argv=None):
         parser = OptionParser(usage="%prog [OPTIONS]", version="%prog 0.1")
-        # parser.add_option("-i", "--init", action="store_true", dest="init", default=False, help="Initialize the environment.")
         parser.add_option("-g", "--generate", action="store_true", dest="generate", default=False, help = "Generate the source for your site.")
         parser.add_option("--loglevel", dest="loglevel", default="warning", help="Set the log output level")
 
@@ -54,9 +53,6 @@ class Launcher(object):
 
         logger = self.setup_logging(loglevel=options.loglevel)
 
-
-        #if options.init:
-        #    oak.init(path=os.path.getcwdu())
         if options.generate:
             # override settings with commandline options
             if options.layout:
