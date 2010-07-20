@@ -6,7 +6,7 @@ import logging
 
 from optparse import OptionParser, OptionGroup
 
-from oak import Oak
+import oak
 
 class Launcher(object):
     "The entrypoint for command line calls"
@@ -25,16 +25,16 @@ class Launcher(object):
     def __init__(self, settings=None):
         self.settings = settings
 
-    def setup_logging(self, loglevel=LOG_LEVELS['warning']):
+    def setup_logging(self, loglevel='warning'):
         self.logger = logging.getLogger('oak')
         ch = logging.StreamHandler(sys.stdout)
         formatter = logging.Formatter("%(asctime)s:%(name)s:%(levelname)s:%(message)s")
         ch.setFormatter(formatter)
-        ch.setLevel(loglevel)
+        ch.setLevel(self.LOG_LEVELS[loglevel])
         self.logger.addHandler(ch)
-        self.logger.setLevel(loglevel)
+        self.logger.setLevel(self.LOG_LEVELS[loglevel])
 
-    def get_logger(self, loglevel=LOG_LEVELS['warning']):
+    def get_logger(self, loglevel='warning'):
         if not self.logger:
             self.logger = self.setup_logging(loglevel=loglevel)
         return self.logger
@@ -50,20 +50,26 @@ class Launcher(object):
         parser.add_option_group(group)
 
         (options, args) = parser.parse_args()
+        print(options.loglevel)
 
-        logger = self.setup_logging(loglevel=options.loglevel)
+        self.setup_logging(loglevel=options.loglevel)
 
         if options.generate:
             # override settings with commandline options
             if options.layout:
                 self.settings.DEFAULT_LAYOUT=options.layout
             if options.destination:
-                selfsettings.OUTPUT_PATH=options.destination
-
+                self.settings.OUTPUT_PATH=options.destination
+            # set the path to the layouts directory
+            self.settings.LAYOUTS_PATH = os.path.sep.join([os.path.dirname(oak.__file__), self.settings.LAYOUTS_PATH])
+            self.logger.debug("LAYOUTS_PATH set to %s" % (self.settings.LAYOUTS_PATH,))
+            self.logger.info("Settings loaded.")
             # instantiate Oak with the given settings
-            oak = Oak(logger=logger, settings=self.settings)
+            my_oak = oak.Oak(logger=self.logger, settings=self.settings)
+            self.logger.info("Oak initiated.")
             # call the generation process
-            oak.generate()
+            my_oak.generate()
+            self.logger.info("Geneartion completed.")
         else:
             parser.print_help()
 
