@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 "Helper functions for oak"
 
-import time
 import datetime
+import os
+import shutil
+import time
 
 def copytree_(src, dst):
     names = os.listdir(src)
@@ -65,9 +67,9 @@ class Filters:
             return "%s %s, %s" % (months[d.tm_mon][0], d.tm_mday, d.tm_year)
     @staticmethod
     def longdate(value):
-        return my_date(value, 'a')
+        return Filters.my_date(value, 'a')
 
     @staticmethod 
     def shortdate(value):
-        return my_date(value, 'b')
+        return Filters.my_date(value, 'b')
 
