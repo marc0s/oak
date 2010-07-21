@@ -4,7 +4,7 @@
     <h2>Tag list</h2>
     <ul>
     {% for k,v in tags.iteritems() %}
-        <li><a href="{{v.url}}">{{v.tag}}</a> ({{tags|length}})</li>
+        <li><a href="{{v.url}}">{{v.tag}}</a> ({{v.posts|length}})</li>
     {% endfor %}
     </ul>
 </div>

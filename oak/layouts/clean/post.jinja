@@ -3,7 +3,7 @@
 {{ post.metadata.title }}
 {% endblock title %}
 {% block header %}
-<p><a href="{{ site_path }}" rel="home">{{ blog_title }}</a></p>
+<p><a href="{{ links.site }}" rel="home">{{ blog_title }}</a></p>
 <h1 id="title">{{ post.metadata.title }}</h1>
 <p class="date">{{ post.metadata.pub_date|longdate }}</p>
 {% endblock header %}
