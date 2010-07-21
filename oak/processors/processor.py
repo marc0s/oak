@@ -34,6 +34,6 @@ class MarkdownProcessor(Processor):
         if post.get('raw'):
             md = markdown.Markdown()
             md.preprocessors.insert(0, 'text', CodeBlockPreprocessor())
-            post['html'] = md.convert(data.get('raw'))
+            post['html'] = md.convert(post.get('raw'))
         return post
 
