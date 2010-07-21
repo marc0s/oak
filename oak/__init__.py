@@ -57,8 +57,13 @@ class Oak(object):
         self.jenv.filters['shortdate'] = Filters.shortdate
         self.logger.debug("Template environment ready.")
         self.tpl_vars = {
-            'site_path': self.settings.PREFIX or '/', # if there is no prefix, use /
             'blog_title': self.settings.BLOG_TITLE, 
+            'links': {
+                'site': self.settings.PREFIX or '/', # if there is no prefix, use /
+                'taglist': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['taglist']]),
+                'archive': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['archive']]),
+                'authors': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['authors']]),
+            }
         }
 
 
@@ -70,10 +75,10 @@ class Oak(object):
 
         :returns: string
         """
-        self.logger.debug("_post_path::%s" % (filename,))
+        self.logger.debug("_post_path:%s" % (filename,))
         year, month = filename.split('-')[:2]
         newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-        self.logger.debug("_post_path::%s" % (newfilename,))
+        self.logger.debug("_post_path:%s" % (newfilename,))
         return os.path.sep.join([self.settings.OUTPUT_PATH, year, month, newfilename])
 
     def _tag_path(self, tagname=None):
@@ -129,7 +134,14 @@ class Oak(object):
 
         :returns: string
         """
-        return os.path.sep.join([self.settings.PREFIX, self.settings.TAGS_PREFIX, "%s.html" % (tagname,)])
+        return os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['taglist']])
+
+    def _tag_index_path(self):
+        """Calculates the PATH for the tags index page
+
+        :returns: string
+        """
+        return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.HTMLS['taglist']])
 
     def _write_file(self, filename, content):
         """Writes content in filename.
@@ -141,6 +153,7 @@ class Oak(object):
         :type content: string
 
         """
+        self.logger.debug("Writing to file '%s'" % (filename,))
         if filename.find(os.path.sep): # if it's a path, check for directories
             if not os.path.exists(os.path.dirname(filename)):
                 os.makedirs(os.path.dirname(filename))
@@ -152,10 +165,13 @@ class Oak(object):
         """Copies the satic files to the output static path.
 
         """
-        copytree_(self.settings.STATIC_PATH, self.settings.OUTPUT_PATH)
-        tpl_satic = os.path.sep.join([self.settings.DEFAULT_LAYOUT, self.settings.STATIC_PATH])
+        static_path = os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.STATIC_PATH])
+        self.logger.debug("Using '%s' as static_path" % (static_path),)
+        copytree_(self.settings.STATIC_PATH, static_path)
+        tpl_static = os.path.sep.join([self.settings.LAYOUTS_PATH, self.settings.DEFAULT_LAYOUT, self.settings.STATIC_PATH])
+        self.logger.debug("Using '%s' as template static path" % (tpl_static),)
         if os.path.exists(tpl_static) and os.path.isdir(tpl_static):
-            copytree_(tpl_static, self.settings.OUTPUT_PATH)
+            copytree_(tpl_static, static_path)
 
     def _do_posts(self):
         """Do the posts generation.
@@ -213,29 +229,35 @@ class Oak(object):
             os.makedirs(self._tag_path())
         self.tpl_vars.update({'tags': self.tags})
         output = self.jenv.get_template(self.settings.TEMPLATES['taglist']).render(self.tpl_vars)
-        self._write_file(os.path.sep.join([self._tag_path(), self.settings.HTMLS['taglist']]), output)
+        self._write_file(self._tag_index_path(), output)
         self.tpl_vars.pop('tags')
         for t in self.tags.keys():
             self._do_tag(self.tags[t])
 
-            
-        
+    def _do_index(self):
+        # ------ POSTS INDEX ------
+        # let's sort the posts in chronological order
+        self.posts.sort(lambda x, y: cmp(x['metadata']['pub_date'], y['metadata']['pub_date']))
+        if self.settings.POSTS_SORT_REVERSE:
+            self.posts.reverse()
+        self.tpl_vars.update({'posts': self.posts[:self.settings.POSTS_COUNT]})
+        self.logger.info("Generating index page at %s" % (self._index_path(),))
+        output = self.jenv.get_template(self.settings.TEMPLATES['index']).render(self.tpl_vars)
+        self._write_file(self._index_path(), output)
+ 
     def generate(self):
         """Generates the HTML files to be published.
 
         :raises: MarkupError, RenderError
         """
-        # --- POSTS ---
-        # Let's iterate through all posts sources and render them
         self.logger.info("Using '%s' as layout path." % (self.settings.DEFAULT_LAYOUT,))
     
-        destination = self.settings.OUTPUT_PATH
-
         posts = []
         tags = {}
         authors = {}
 
         self._do_posts()
         self._do_tags()
+        self._copy_statics()
+        self._do_index()
 
-       
