@@ -8,4 +8,5 @@ In no particular order...
 * Add an authors page and a page per author
 * Add some option to not re-generate already generated contents (or do that by default).
 * Add a new entry in settings.py for the license footer
+* Fix settings.py: LAYOUTS_PATH description is outdated
 
