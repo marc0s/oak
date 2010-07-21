@@ -49,8 +49,13 @@ keys which are only available to some types of content.
 ### All type of content
 
     {
-      'site_path': settings.PREFIX or '/',
       'blog_title': settings.BLOG_TITLE,
+      'links': {
+        'site': settings.PREFIX or '/',
+        'authors': url(settings.HTMLS['authors']),
+        'archive': url(settings.HTMLS['archive']),
+        'taglist': url(settings.HTMLS['taglist']),
+      }
     }
 
 ### Post
@@ -82,7 +87,7 @@ just sublcassed `dict` for creating them.
 
 ## The contents of Post and Tag
 
-Here we describe the contents of this objects.
+Here we describe the contents of these objects.
 
 ### Post
 
@@ -115,5 +120,5 @@ here. Nevertheless, you'll always find the following contents:
     }
 
 This contents are set by default in `settings.py`, you can always check
-there which keys will always be available in a the metadata.
+there which keys will always be available in the metadata.
 

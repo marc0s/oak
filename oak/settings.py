@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+FOO='dist'
+
 # Settings file for oak
 
 # Set the default author name for the blog
@@ -56,6 +58,8 @@ HTMLS = {
     'index': 'index.html',
     'taglist': 'tags.html',
 #    'tag': '%s/%%s.html' % (TAGS_PREFIX,),
+    'archive': 'archive.html',
+    'authors': 'authors.html',
 }
 
 # Wether to generate a 'tags' index page or not (True or False)

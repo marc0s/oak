@@ -8,16 +8,16 @@
     <div id="container">
       <div id="header">
         <h1 class="title">
-            <a href="{{ site_path }}" title="Main page">{{ blog_title }}</a>
+            <a href="{{ links.site }}" title="Main page">{{ blog_title }}</a>
         </h1>
       </div>
       {% block body %}{% endblock body %}
     </div>
     <div id="footer">
-        <p class="powered"><a href="{{ site_path }}" title="Index">index</a> | 
-            <a href="#" title="Archive">archive</a> |  
-            <a href="tags.html" title="Tag list">tags</a> | 
-            <a href="#" title="Authors list">authors</a></p>
+        <p class="powered"><a href="{{ links.site }}" title="Index">index</a> | 
+            <a href="{{ links.archive }}" title="Archive">archive</a> |  
+            <a href="{{ links.taglist }}" title="Tag list">tags</a> | 
+            <a href="{{ links.authors }}" title="Authors list">authors</a></p>
         </p>
     </div>
     <div>

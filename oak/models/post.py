@@ -2,9 +2,16 @@
 
 import yaml
 import codecs
-import settings
+
+import oak.processors as procs
 
 HEADER_MARK = '---'
+
+class PostError(Exception):
+    """Custom exception for invalid posts."""
+    def __init__(self, msg):
+        self.msg = msg
+
 
 class Post(dict):
     """
@@ -32,19 +39,31 @@ class Post(dict):
     header start and end.
 
     """
-    def __init__(self, f):
+    def __init__(self, f, metadata, processor=None):
+        """The Post class __init__
+
+        :param f: the path to the post file
+        :param metadata: default metadata dict
+        :param processor: the processor to render post's contents
+        :processor type: class
+
+        :raises: PostError
+        """
         try:
             _f = codecs.open(f, mode='r', encoding='utf-8')
         except:
-            raise Exception('Unable to open file. Hint: isn\'t it UTF-8 encoded?')
+            raise PostError('Unable to open file. Hint: isn\'t it UTF-8 encoded?')
         
         # Set metadata to the app defaults
-        self['metadata'] = settings.POST_DEFAULTS.copy()
+        self['metadata'] = metadata.copy()
         self.f = _f.read()
         if not self.f.startswith(HEADER_MARK):
-            raise Exception('Post file invalid, no header found.')
-        
+            raise PostError('Post file invalid, no header found.')
         _, metadata, self['raw'] = self.f.split(HEADER_MARK, 2)
         # update the metadata with the header's contents
         self['metadata'].update(yaml.load(metadata))
+        # TODO auto determine processor based on metadata['markup']
+        if processor:
+            p = processor()
+            self = p.process(self)
 
