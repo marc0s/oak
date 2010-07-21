@@ -9,31 +9,31 @@ class Processor(object):
     and generate the resulting HTML code.
     """
 
-    def process(self, data):
+    def process(self, post):
         """This method is responsible of processing the post's markup into HTML.
 
         It must be redefined for the different markups that are going to be supported.
-        The resulting HTML *must* be stored in data['post']['html']
+        The resulting HTML *must* be stored in post['html']
 
         If this Processor is used, the content is returned as is.
 
-        :param data: the dict with the data to process.
+        :param post: the dict with the post to process
         :returns: dict
         """
-        return data
+        return post
 
 class MarkdownProcessor(Processor):
     """The markdown syntax processor for oak posts.
 
     """
 
-    def process(self, data):
+    def process(self, post):
         """The process method for Markdown posts.
 
         """
-        if data.get('post'):
+        if post.get('raw'):
             md = markdown.Markdown()
             md.preprocessors.insert(0, 'text', CodeBlockPreprocessor())
-            data['post']['html'] = md.convert(data.get('post')['raw'])
-        return data 
+            post['html'] = md.convert(data.get('raw'))
+        return post
 
