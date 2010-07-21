@@ -34,13 +34,13 @@ class Manager(object):
         
         # create the base project path and other dirs
         os.makedirs(path)
+        # TODO use default settings
         os.makedirs(os.path.sep.join([path, 'content'])) # where content is created
         os.makedirs(os.path.sep.join([path, 'site'])) # where blog is generated
+        os.makedirs(os.path.sep.join([path, 'static'])) # where static files are
 
         # obtain where the oak module is located and copy settings.py and manage.py
         oak_path = os.path.dirname(oak.__file__)
-        print("*++++++++++++++++++")
-        print(oak_path)
         shutil.copy2(os.path.sep.join([oak_path, 'settings.py']), path)
         shutil.copy2(os.path.sep.join([oak_path, 'scripts', 'manage.py']), path)
         print("""
