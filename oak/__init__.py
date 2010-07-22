@@ -154,7 +154,7 @@ class Oak(object):
 
         """
         self.logger.debug("Writing to file '%s'" % (filename,))
-        if filename.find(os.path.sep): # if it's a path, check for directories
+        if filename.count(os.path.sep): # if it's a path, check for directories
             if not os.path.exists(os.path.dirname(filename)):
                 os.makedirs(os.path.dirname(filename))
         outfile = codecs.open(filename, mode='w', encoding='utf-8')
