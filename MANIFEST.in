@@ -1,4 +1,4 @@
-include README VERSION TODO
+include README.md VERSION TODO
 recursive-include oak *.py *.jinja *.css
 recursive-include bin/hooks *
 
