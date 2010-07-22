@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
-FOO='dist'
-
 # Settings file for oak
 
 # Set the default author name for the blog
-AUTHOR = 'Marcos'
+AUTHOR = 'your name will be fine'
 
 # Set the blog title
-BLOG_TITLE = 'marc0s.blog'
+BLOG_TITLE = 'your blog title'
 
 # URL prefixes
-PREFIX = '' # Empty for / base path, /foo for foo base path
+# Put / if your blog will be in http://example.com/ or /blog if it will be in http://example.com/blog and so on
+PREFIX = ''
 ARCHIVE_PREFIX = 'archive'
 TAGS_PREFIX = 'tag'
 
@@ -21,8 +20,8 @@ CONTENT_PATH = 'content'
 # Set the extension that the sources will have
 SRC_EXT = 'md'
 
-# Set the format of the post file name
-# UNUSED
+# Set the format of the post file name, now posts MUST have the format below!
+# UNUSED, changing it has no effect!!
 POST_FILE_FORMAT = "%Y-%m-%s.html"
 
 # Set the path to the static content directory, it will be copied as-is to OUTPUT_PATH/static
@@ -32,7 +31,8 @@ STATIC_PATH = 'static'
 # Set the path where the output will be generated
 OUTPUT_PATH = 'site'
 
-# Set the path to the layouts directory, relative to the settings.py path
+# Set the path to the layouts directory, the default is OK if you are using the installed oak package
+# You'll probably don't want to change it unless you know what you're doing
 LAYOUTS_PATH = 'layouts'
 
 # Set the name of the default layout
@@ -57,12 +57,12 @@ TEMPLATES = {
 HTMLS = {
     'index': 'index.html',
     'taglist': 'tags.html',
-#    'tag': '%s/%%s.html' % (TAGS_PREFIX,),
     'archive': 'archive.html',
     'authors': 'authors.html',
 }
 
 # Wether to generate a 'tags' index page or not (True or False)
+# Still not used, tag page is always generated
 GENERATE_TAGS = True
 
 # This is a dict with the default options for posts, which can be overriden
