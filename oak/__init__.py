@@ -58,6 +58,7 @@ class Oak(object):
         self.logger.debug("Template environment ready.")
         self.tpl_vars = {
             'blog_title': self.settings.BLOG_TITLE, 
+            'license_text': self.settings.BLOG_LICENSE_TEXT,
             'links': {
                 'site': self.settings.PREFIX or '/', # if there is no prefix, use /
                 'taglist': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['taglist']]),

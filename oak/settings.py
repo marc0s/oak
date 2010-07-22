@@ -8,6 +8,9 @@ AUTHOR = 'your name will be fine'
 # Set the blog title
 BLOG_TITLE = 'your blog title'
 
+# The blog's contents license, you can include HTML
+BLOG_LICENSE_TEXT = 'The contents of this site are put on the <a href="http://creativecommons.org/publicdomain/zero/1.0/">public domain</a>'
+
 # URL prefixes
 # Put / if your blog will be in http://example.com/ or /blog if it will be in http://example.com/blog and so on
 PREFIX = ''
