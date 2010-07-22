@@ -6,12 +6,12 @@ with packages you probably won't use anymore. You got warned :)
 
 ## Setup
 
-  $ pip install oak
+    $ pip install oak
 
 ## Creating the blog and its contents
 
-  $ cd ~/blog
-  $ oak-admin.py --init=blogname
+    $ cd ~/blog
+    $ oak-admin.py --init=blogname
 
 Now some directories will be created and you're ready to write your
 posts under `content/`. See below for the files format.
@@ -21,8 +21,8 @@ defaults should be OK for testing it.
 
 You can now generate the files to be published by yor websever of choice:
 
-  $ cd ~/blog/blogname
-  $ python manage.py -g
+    $ cd ~/blog/blogname
+    $ python manage.py -g
 
 Now you have the HTML files under `site/` ready to be served.
 
@@ -31,12 +31,12 @@ Now you have the HTML files under `site/` ready to be served.
 The posts files contains a YAML header with the posts' metadata, the file
 *must* start with that header. A sample header can be:
 
-  ---
-    title: 'My post'
-    author: 'your name'
-    pub_date: 2010-07-22 21:20:00
-    tags: ['oak', 'test']
-  ---
+    ---
+      title: 'My post'
+      author: 'your name'
+      pub_date: 2010-07-22 21:20:00
+      tags: ['oak', 'test']
+    ---
 
 And the content, in Markdown format, should follow.
 
