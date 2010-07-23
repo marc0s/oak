@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>{{ blog.title }}</title>
+	<link href="{{ links.feed }}" rel="self" />
+	<link href="{{ blog.url }}" />
+	<id>urn:uuid:{{ blog.id }}</id>
+	<updated>{{ blog.last_updated }}</updated>
+	<author>
+		<name>{{ blog.author }}</name>
+		{% if blog.email %}<email>{{ blog.email }}</email>{% endif %}
+	</author>
+    {% for p in posts %}
+	<entry>
+		<title>{{ p.title }}</title>
+		<link href="{{ blog.url }}/{{ p.url }}" />
+		<id>urn:uuid:{{ p.id }}</id>
+		<updated>{{ p.metadata.pub_date|isodate }}</updated>
+		<summary>{{ p.html|e }}</summary>
+	</entry>
+    {% endfor %}
+</feed>

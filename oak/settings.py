@@ -4,9 +4,16 @@
 
 # Set the default author name for the blog
 AUTHOR = 'your name will be fine'
+EMAIL = 'your email' # not required
 
 # Set the blog title
 BLOG_TITLE = 'your blog title'
+
+# Set the URL of your blog, only used when generating the Atom feed.
+BLOG_URL = 'http://example.com'
+
+# The blog's contents license, you can include HTML
+BLOG_LICENSE_TEXT = 'The contents of this site are put on the <a href="http://creativecommons.org/publicdomain/zero/1.0/">public domain</a>'
 
 # URL prefixes
 # Put / if your blog will be in http://example.com/ or /blog if it will be in http://example.com/blog and so on
@@ -52,6 +59,7 @@ TEMPLATES = {
     'post': 'post.jinja', # the template will receive ...
     'taglist': 'tags.jinja', # the template will receive a list of tags
     'tag': 'tag.jinja', # the template for one tag
+    'feed': 'atom.jinja', # the template for the atom feed
 }
 
 HTMLS = {
@@ -59,11 +67,15 @@ HTMLS = {
     'taglist': 'tags.html',
     'archive': 'archive.html',
     'authors': 'authors.html',
+    'feed': 'atom.xml',
 }
 
 # Wether to generate a 'tags' index page or not (True or False)
 # Still not used, tag page is always generated
 GENERATE_TAGS = True
+
+# Wether to generate an 'atom.xml' feed or not (True or False)
+GENERATE_FEED = True
 
 # This is a dict with the default options for posts, which can be overriden
 # by setting the keys on the YAML header in the post .md file

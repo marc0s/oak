@@ -13,7 +13,7 @@ def find_templates():
 
 setup(
     name='Oak',
-    version='git',
+    version='0.1.2',
     url='http://github.com/marc0s/oak',
     author='marc0s',
     author_email='marc0s@fsfe.org',
@@ -22,6 +22,6 @@ setup(
     scripts=['bin/oak-admin.py',],
     requires=['Jinja2','Markdown','PyYAML','Pygments'],
     license='WTFPL',
-    long_description=open('README').read(),
+    long_description=open('README.md').read(),
 )
 

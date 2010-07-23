@@ -2,6 +2,7 @@
 "Helper functions for oak"
 
 import datetime
+import hashlib
 import os
 import shutil
 import time
@@ -65,6 +66,9 @@ class Filters:
             return "%s, %s %s, %s" % (days[d.tm_wday][1], months[d.tm_mon][1], d.tm_mday, d.tm_year)
         if oformat == 'b':
             return "%s %s, %s" % (months[d.tm_mon][0], d.tm_mday, d.tm_year)
+        if oformat == 'c':
+            return datetime.datetime.fromtimestamp(time.mktime(d)).isoformat()
+
     @staticmethod
     def longdate(value):
         return Filters.my_date(value, 'a')
@@ -72,4 +76,24 @@ class Filters:
     @staticmethod 
     def shortdate(value):
         return Filters.my_date(value, 'b')
+
+    @staticmethod
+    def isodate(value):
+        return Filters.my_date(value, 'c')
+
+class Atom(object):
+    """Class for Atom-related stuff.
+    """
+
+    @staticmethod
+    def gen_id(string):
+        h = hashlib.new('sha1')
+        h.update(string)
+        return h.hexdigest()
+
+    @staticmethod
+    def blog_id(string):
+        h = hashlib.new('sha1')
+        h.update(string)
+        return h.hexdigest()
 

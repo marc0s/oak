@@ -18,7 +18,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from oak.models.post import Post
 from oak.models.tag import Tag
-from oak.utils import copytree_, Filters
+from oak.utils import copytree_, Filters, Atom
 from oak.processors import processor
 
 class Oak(object):
@@ -55,14 +55,24 @@ class Oak(object):
         self.jenv.filters['datetimeformat'] = Filters.datetimeformat
         self.jenv.filters['longdate'] = Filters.longdate
         self.jenv.filters['shortdate'] = Filters.shortdate
+        self.jenv.filters['isodate'] = Filters.isodate
         self.logger.debug("Template environment ready.")
         self.tpl_vars = {
-            'blog_title': self.settings.BLOG_TITLE, 
+            'blog': {
+                'title': self.settings.BLOG_TITLE,
+                'url': self.settings.BLOG_URL,
+                'id': Atom.blog_id(self.settings.BLOG_URL),
+                'last_updated': None, # Will be updated when reading posts.
+                'author': self.settings.AUTHOR,
+                'email': self.settings.EMAIL,
+            },
+            'license_text': self.settings.BLOG_LICENSE_TEXT,
             'links': {
                 'site': self.settings.PREFIX or '/', # if there is no prefix, use /
                 'taglist': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['taglist']]),
                 'archive': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['archive']]),
                 'authors': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['authors']]),
+                'feed': os.path.sep.join([self.settings.BLOG_URL, self.settings.HTMLS['feed']]),
             }
         }
 
@@ -143,6 +153,13 @@ class Oak(object):
         """
         return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.HTMLS['taglist']])
 
+    def _feed_path(self):
+        """Calculates the PATH for the atom.xml feed
+
+        :returns: string
+        """
+        return os.path.sep.join([self.settings.OUTPUT_PATH, 'atom.xml'])
+
     def _write_file(self, filename, content):
         """Writes content in filename.
 
@@ -186,6 +203,7 @@ class Oak(object):
             self.logger.info("Processing %s..." % (filename,))
             post = Post(f, self.settings.POST_DEFAULTS, processor.MarkdownProcessor)
             post['url'] = self._post_url(newfilename)
+            post['id'] = Atom.gen_id(filename)
             self.posts.append(post)
             # cache the tags of the current post
             for t in post['metadata']['tags']:
@@ -238,26 +256,39 @@ class Oak(object):
         # ------ POSTS INDEX ------
         # let's sort the posts in chronological order
         self.posts.sort(lambda x, y: cmp(x['metadata']['pub_date'], y['metadata']['pub_date']))
+        # Update the blog.last_updated key for self.tpl_vars
+        self.tpl_vars['blog']['last_updated'] = self.posts[0]['metadata']['pub_date']
         if self.settings.POSTS_SORT_REVERSE:
             self.posts.reverse()
         self.tpl_vars.update({'posts': self.posts[:self.settings.POSTS_COUNT]})
         self.logger.info("Generating index page at %s" % (self._index_path(),))
         output = self.jenv.get_template(self.settings.TEMPLATES['index']).render(self.tpl_vars)
         self._write_file(self._index_path(), output)
- 
+        self.tpl_vars.pop('posts')
+
+    def _do_feed(self):
+        """Generates an Atom feed of the blog posts
+
+        """
+        self.tpl_vars.update({'posts': self.posts})
+        self.logger.info("Generating atom.xml at %s" % (self._feed_path(),))
+        output = self.jenv.get_template(self.settings.TEMPLATES['feed']).render(self.tpl_vars)
+        self._write_file(self._feed_path(), output)
+        self.tpl_vars.pop('posts')
+        self.logger.info("atom.xml file generated.")
+
     def generate(self):
         """Generates the HTML files to be published.
 
         :raises: MarkupError, RenderError
         """
         self.logger.info("Using '%s' as layout path." % (self.settings.DEFAULT_LAYOUT,))
-    
-        posts = []
-        tags = {}
-        authors = {}
 
         self._do_posts()
         self._do_tags()
         self._copy_statics()
         self._do_index()
+        # the feed MUST be done after the index
+        if self.settings.GENERATE_FEED:
+            self._do_feed()
 
