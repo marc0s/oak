@@ -61,7 +61,7 @@ class Oak(object):
             'blog': {
                 'title': self.settings.BLOG_TITLE,
                 'url': self.settings.BLOG_URL,
-                'id': Atom.blog_id(self.settings.BLOG_URL),
+                'id': self._feed_path()
                 'last_updated': None, # Will be updated when reading posts.
                 'author': self.settings.AUTHOR,
                 'email': self.settings.EMAIL,
@@ -202,8 +202,8 @@ class Oak(object):
             newfilename = "%s.html" % (os.path.splitext(filename)[0],)
             self.logger.info("Processing %s..." % (filename,))
             post = Post(f, self.settings.POST_DEFAULTS, processor.MarkdownProcessor)
-            post['url'] = self._post_url(newfilename)
-            post['id'] = Atom.gen_id(filename)
+            post['url'] = "%s%s" % (self.settings.BLOG_URL, self._post_url(newfilename))
+            post['id'] = Atom.gen_id(post)
             self.posts.append(post)
             # cache the tags of the current post
             for t in post['metadata']['tags']:

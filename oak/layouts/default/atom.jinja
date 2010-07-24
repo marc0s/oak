@@ -3,7 +3,7 @@
 	<title>{{ blog.title }}</title>
 	<link href="{{ links.feed }}" rel="self" />
 	<link href="{{ blog.url }}" />
-	<id>urn:uuid:{{ blog.id }}</id>
+	<id>{{ blog.id }}</id>
 	<updated>{{ blog.last_updated }}</updated>
 	<author>
 		<name>{{ blog.author }}</name>
@@ -11,11 +11,13 @@
 	</author>
     {% for p in posts %}
 	<entry>
-		<title>{{ p.title }}</title>
+		<title>{{ p.metadata.title }}</title>
 		<link href="{{ blog.url }}/{{ p.url }}" />
-		<id>urn:uuid:{{ p.id }}</id>
+		<id>{{ p.id }}</id>
 		<updated>{{ p.metadata.pub_date|isodate }}</updated>
-		<summary>{{ p.html|e }}</summary>
+		<content type="xhtml">
+            <div xmlns="http://www.w3.org/1999/xhtml">{{ p.html|e }}</div>
+        </content>
 	</entry>
     {% endfor %}
 </feed>

@@ -86,14 +86,16 @@ class Atom(object):
     """
 
     @staticmethod
-    def gen_id(string):
-        h = hashlib.new('sha1')
-        h.update(string)
-        return h.hexdigest()
+    def gen_id(post):
+        """Generates the atom:id for the post `post`
 
-    @staticmethod
-    def blog_id(string):
-        h = hashlib.new('sha1')
-        h.update(string)
-        return h.hexdigest()
+        :param string: the post object
+        :returns: string
+        """
+        import urlparse
+        u = urlparse.urlsplit(post['url'])
+        d = post['metadata']['pub_date']
+        d = Filters.datetimeformat(d)
+        _id = "tag:%s,%s:%s" % (u.hostname, d, u.path)
+        return _id
 
