@@ -61,7 +61,7 @@ class Oak(object):
             'blog': {
                 'title': self.settings.BLOG_TITLE,
                 'url': self.settings.BLOG_URL,
-                'id': self._feed_path(),
+                'id': "%s%s%s" % (self.settings.BLOG_URL, os.path.sep, "atom.xml"),
                 'last_updated': None, # Will be updated when reading posts.
                 'author': self.settings.AUTHOR,
                 'email': self.settings.EMAIL,
