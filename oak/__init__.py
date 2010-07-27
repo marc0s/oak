@@ -165,10 +165,10 @@ class Oak(object):
 
         :returns: string
         """
-        return os.path.sep.join([sel.fsettings.OUTPUT_PATH, self.settings.HTMLS['archive']])
+        return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.HTMLS['archive']])
 
     def _archive_url(self):
-        return os.path.sep.join([sel.fsettings.PREFIX, self.settings.HTMLS['archive']])
+        return os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['archive']])
         
     def _write_file(self, filename, content):
         """Writes content in filename.

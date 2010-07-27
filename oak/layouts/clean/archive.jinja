@@ -1,0 +1,17 @@
+{% extends "base.jinja" %}
+{% block header %}
+  <p class="thehook">My Notes</p>
+  <h1 id="title"><a href="{{ links.site }}" title="{{ blog.title }}" rel="site">{{ blog.title }}</a></h1>
+{% endblock header %}
+{% block body %}
+<div id="writings">
+  <div id="body" class="index">
+    {% for p in posts %}
+      <div class="entry article">
+        <p class="published">{{ p.metadata.pub_date|shortdate }}</p>
+        <h3><a href="{{ p.url }}">{{ p.metadata.title }}</a></h3>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock body %}
