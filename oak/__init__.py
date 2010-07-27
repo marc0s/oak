@@ -160,6 +160,16 @@ class Oak(object):
         """
         return os.path.sep.join([self.settings.OUTPUT_PATH, 'atom.xml'])
 
+    def _archive_path(self):
+        """Calculates the PATH for the archive page
+
+        :returns: string
+        """
+        return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.HTMLS['archive']])
+
+    def _archive_url(self):
+        return os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['archive']])
+        
     def _write_file(self, filename, content):
         """Writes content in filename.
 
@@ -266,6 +276,13 @@ class Oak(object):
         self._write_file(self._index_path(), output)
         self.tpl_vars.pop('posts')
 
+    def _do_archive(self):
+        self.tpl_vars.update({'posts': self.posts[:]})
+        self.logger.info("Generating archive page at %s " % (self._archive_path(),))
+        output = self.jenv.get_template(self.settings.TEMPLATES['archive']).render(self.tpl_vars)
+        self._write_file(self._archive_path(), output)
+        self.tpl_vars.pop('posts')
+
     def _do_feed(self):
         """Generates an Atom feed of the blog posts
 
@@ -291,4 +308,5 @@ class Oak(object):
         # the feed MUST be done after the index
         if self.settings.GENERATE_FEED:
             self._do_feed()
+        self._do_archive()
 
