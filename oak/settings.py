@@ -39,7 +39,7 @@ STATIC_PATH = 'static'
 OUTPUT_PATH = 'site'
 
 # Set the path to the layouts directory, the default is OK if you are using the installed oak package
-# You'll probably don't want to change it unless you know what you're doing
+# Use an ABSOLUTE path if you want to point a custom location
 LAYOUTS_PATH = 'layouts'
 
 # Set the name of the default layout
@@ -85,5 +85,4 @@ POST_DEFAULTS = {
     'layout': 'post',
     'tags': [],
 }
-
 
