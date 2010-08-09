@@ -4,8 +4,6 @@ TODO
 In no particular order...
 
 * Create a script for extracting posts from wordpress (using python html2text)
-* Add an archive page
 * Add an authors page and a page per author
 * Add some option to not re-generate already generated contents (or do that by default).
-* Provide the way to use custom templates outside the oak package
 

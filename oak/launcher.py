@@ -60,8 +60,10 @@ class Launcher(object):
                 self.settings.DEFAULT_LAYOUT=options.layout
             if options.destination:
                 self.settings.OUTPUT_PATH=options.destination
-            # set the path to the layouts directory
-            self.settings.LAYOUTS_PATH = os.path.sep.join([os.path.dirname(oak.__file__), self.settings.LAYOUTS_PATH])
+            # set the path to the layouts directory, if LAYOUTS_PATH is not absolute, use the layouts from the package
+            # TODO test!
+            if not os.path.isabs(self.settings.LAYOUTS_PATH):
+                self.settings.LAYOUTS_PATH = os.path.sep.join([os.path.dirname(oak.__file__), self.settings.LAYOUTS_PATH])
             self.logger.debug("LAYOUTS_PATH set to %s" % (self.settings.LAYOUTS_PATH,))
             self.logger.info("Settings loaded.")
             # instantiate Oak with the given settings
