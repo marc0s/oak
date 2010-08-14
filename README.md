@@ -5,11 +5,8 @@ up by a (D)VCS and that the blog itself is all made up by static content.
 
 ## Status
 
-Oak is alpha software, still under development. Although it's already
-at version 0.1.1 for public preview.
-
-Lot of things are still left: testing, some things still need to be reviewed,
-more layouts will be nice, ...
+Oak is already usable but lot of things are still left: testing, some 
+things still need to be reviewed, more layouts will be nice, ...
 
 ## Design
 
