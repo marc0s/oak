@@ -41,7 +41,7 @@ class Post(dict):
     header start and end.
 
     """
-    def __init__(self, f, settings, processor=None):
+    def __init__(self, f, url, settings, processor=None):
         """The Post class __init__
 
         :param f: the path to the post file
@@ -77,7 +77,7 @@ class Post(dict):
 
         # TODO add sanity check on source filename (count of - ...)
         self['output_path'] = self._post_path(name, settings.OUTPUT_PATH) 
-        self['url'] = "%s%s" % (settings.BLOG_URL, self._post_url(name, settings.PREFIX))
+        self['url'] = "%s%s" % (url, self._post_url(name, settings.PREFIX))
         self['id'] = Atom.gen_id(self)
 
     def _post_url(self, name, prefix):
