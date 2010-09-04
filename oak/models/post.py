@@ -77,10 +77,10 @@ class Post(dict):
 
         # TODO add sanity check on source filename (count of - ...)
         self['output_path'] = self._post_path(name, settings.OUTPUT_PATH) 
-        self['url'] = "%s%s" % (url, self._post_url(name, settings.PREFIX))
+        self['url'] = "%s%s" % (url, self._post_url(name))
         self['id'] = Atom.gen_id(self)
 
-    def _post_url(self, name, prefix):
+    def _post_url(self, name):
         """Calculates the URL of a post given a name
 
         :param name: the name of the output (generated) file
@@ -90,7 +90,7 @@ class Post(dict):
         """
         year, month = name.split('-')[:2]
         newfilename = "%s.html" % name
-        return os.path.sep.join([prefix, year, month, newfilename])
+        return os.path.sep.join(['', year, month, newfilename])
 
     def _post_path(self, name, output_path):
         """Calculates the final path for a post given a name

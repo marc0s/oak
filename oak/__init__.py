@@ -171,7 +171,7 @@ class Oak(object):
         self.logger.info("Using %s as source of content." % (self.settings.CONTENT_PATH,))
         for f in glob.glob("%s/*.%s" % (self.settings.CONTENT_PATH,self.settings.SRC_EXT)):
             self.logger.info("Processing %s..." % (f,))
-            post = Post(f, self.settings, processor.MarkdownProcessor)
+            post = Post(f, self.blog_url, self.settings, processor.MarkdownProcessor)
             self.posts.append(post)
             # cache the tags of the current post
             for t in post['metadata']['tags']:

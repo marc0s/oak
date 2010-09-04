@@ -5,7 +5,7 @@ import os
 class Tag(dict):
     def __init__(self, tag, settings, posts=[]):
         self['tag'] = tag
-        self['url'] = self._tag_url(settings.PREFIX, settings.TAGS_PREFIX, tag)
+        self['url'] = self._tag_url(settings.TAGS_PREFIX, tag)
         self['posts'] = posts
         self['path'] = self._tag_path(settings.OUTPUT_PATH, settings.TAGS_PREFIX, tag) 
 
@@ -21,7 +21,7 @@ class Tag(dict):
             return os.path.sep.join([output_path, tags_prefix, "%s.html" % (tagname,)])
         return os.path.sep.join([output_path, tags_prefix])
     
-    def _tag_url(self, prefix, tags_prefix, tagname):
+    def _tag_url(self, tags_prefix, tagname):
         """Calculates the URL for a tag page given a tag name
 
         :param tagname: the name of the tag
@@ -29,6 +29,6 @@ class Tag(dict):
 
         :return: string
         """
-        return os.path.sep.join([prefix, tags_prefix, "%s.html" % (tagname,)])
+        return os.path.sep.join([tags_prefix, "%s.html" % (tagname,)])
 
 
