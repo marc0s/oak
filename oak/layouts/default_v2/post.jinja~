@@ -1,0 +1,17 @@
+{% extends "base.jinja" %}
+{% block title %}
+{{ post.metadata.title }} >> <h1>{{ post.metadata.title }}</h1>
+{% endblock title %}
+{% block body %}
+<div id="main">
+<div class="post">
+  <div class="postbody">
+  {{ post.html }}
+  </div>
+  <div class="pmetadata">
+  <p>Created on <strong>{{ post.metadata.pub_date|datetimeformat }}</strong> by <strong>{{ post.metadata.author }}</strong>. </p>
+  <p>Tagged as {{ post.metadata.tags|join(', ') }}.</p>
+  </div>
+</div>
+</div>
+{% endblock body %}

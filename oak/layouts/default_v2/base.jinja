@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="generator" content="oak"/>
+    <link rel="stylesheet" href="{{ links.css }}" type="text/css"/>
+    <link rel="alternate" type="application/atom+xml" href="{{ links.feed }}" title="Atom feed"/>
+    <title>{% block title %}{{ blog.title }} :: main page{% endblock title %}</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+	{% block header %}
+	<h1 class="title">
+	  <a href="{{ links.site }}" title="Main page">{{ blog.title }}</a>
+	</h1> {% block subheader %}<h1 class="post">main page</h1>{% endblock subheader %}
+	{% endblock header %}
+      </div>
+      {% block body %}{% endblock body %}
+    </div>
+    <div id="footer">
+        <p class="powered"><a href="{{ links.site }}" title="Index">index</a> | 
+            <a href="{{ links.archive }}" title="Archive">archive</a> |  
+            <a href="{{ links.taglist }}" title="Tag list">tags</a> | 
+            <a href="{{ links.authorlist }}" title="Authors list">authors</a></p>
+        </p>
+    </div>
+    <div>
+        <p class="powered">Powered by <a href="http://github.com/marc0s/oak" title="oak homepage">oak</a>
+    </div>
+  </body>
+</html>
+

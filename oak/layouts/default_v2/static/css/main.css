@@ -1,0 +1,23 @@
+body { color: #222222; background-color: #eeeeee; font-family: verdana, helvetica, sans-serif; font-size: 84%; margin: 0; padding: 0; }
+
+h2         { color: #444444; margin-top: 1em; }
+ul         { list-style-type: circle; }
+a          { color: #888888; text-decoration: none; border-bottom: 1px dotted #888888; }
+a:hover    { color: #888888; text-decoration: none; border-bottom: 1px solid  #888888; }
+
+#container { border: 0; margin: 0; padding: 0; }
+#header    { color: #eeeeee; width: 100%; border: 0; margin: 0; padding: 0; background-color: #444444; }
+#header h1.post   { color: #eeeeee; width: 100%; border: 0; margin: 0 0 0 0.5ex; padding: 0.5ex; background-color: #444444; }
+#main      { max-width: 70em; text-align: justify; line-height: 1.5em; padding: 2em; border: 0; }
+#footer    { color: #eeeeee; width: 100%; border: 0; margin: 0; padding: 0.5em 0em 0.5em 0em; background-color: #444444; }
+
+#header a       { color: #eeeeee; text-decoration: none; border-bottom: 0px; }
+#header a:hover { color: #eeeeee; text-decoration: none; border-bottom: 0px; }
+
+.title     { font-size: 200%; font-weight: normal; margin: 0 0 0 0.5ex; padding: 0.5ex; }
+.subtitle  { font-size: 50%; font-style: italic; margin-left: 1em; }
+.pmetadata { font-size: 80%; line-height: normal; text-align: right; }
+.powered   { font-size: 80%; line-height: normal; text-align: center; }
+.code      { margin: 0px; padding: 2px; padding-left: 10px; border: 1px solid #888888; background-color: #f8f8f8; }
+.date      { font-size: 80%; font-style: italic }
+

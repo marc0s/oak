@@ -1,0 +1,17 @@
+{% extends "base.jinja" %}
+{% block title %}
+{{ blog.title }} :: authors
+{% endblock title %}
+{% block subheader %}
+<h1 class="post">authors</h1>
+{% endblock subheader %}
+{% block body %}
+<div id="main">
+    <h2>author list</h2>
+    <ul>
+    {% for k,v in authors.iteritems() %}
+        <li><a href="{{v.url}}">{{v.author}}</a> ({{v.posts|length}})</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock body %}
