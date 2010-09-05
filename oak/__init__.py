@@ -77,28 +77,6 @@ class Oak(object):
         }
 
 
-    def _tag_path(self, tagname=None):
-        """Calculates the final path for a tag page given a tag name
-
-        :param tagname: the name of the tag. If None, return just the directory where tag files are write to
-        :type tagname: string
-
-        :returns: string
-        """
-        if tagname:
-            return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX, "%s.html" % (tagname,)])
-        return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX])
-    
-    def _tag_url(self, tagname):
-        """Calculates the URL for a tag page given a tag name
-
-        :param tagname: the name of the tag
-        :type tagname: string
-
-        :return: string
-        """
-        return os.path.sep.join([self.settings.PREFIX, self.settings.TAGS_PREFIX, "%s.html" % (tagname,)])
-
     def _index_path(self):
         """Calculates the path of the index page
 
@@ -186,7 +164,7 @@ class Oak(object):
             # cache the tags of the current post
             for t in post['metadata']['tags']:
                 if t not in self.tags.keys():
-                    self.tags[t] = Tag(tag=t, url=self._tag_url(t), posts=[post])
+                    self.tags[t] = Tag(tag=t, settings=self.settings, posts=[post])
                 else:
                     self.tags[t]['posts'].append(post)
             # cache the author of the current post
@@ -213,17 +191,18 @@ class Oak(object):
         """
         self.tpl_vars.update({'tag': tag})
         output = self.jenv.get_template(self.settings.TEMPLATES['tag']).render(self.tpl_vars)
-        self.logger.info("Generating tag page for %s in %s" % (tag['tag'], self._tag_path(tag['tag'])))
-        self._write_file(self._tag_path(tag['tag']), output)
+        self.logger.info("Generating tag page for %s in %s" % (tag['tag'], tag['path']))
+        self._write_file(tag['path'], output)
         # remove added keys
         self.tpl_vars.pop('tag') 
 
     def _do_tags(self):
         """Do the tags index page
         """
-        if not os.path.exists(self._tag_path()) or not os.path.isdir(self._tag_path()):
-            self.logger.debug("Tag files directory %s not found, creating" % (self._tag_path(),))
-            os.makedirs(self._tag_path())
+        tags_dir = os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX]) 
+        if not os.path.exists(tags_dir) or not os.path.isdir(tags_dir):
+            self.logger.debug("Tag files directory %s not found, creating" % (tags_dir,))
+            os.makedirs(tags_dir)
         self.tpl_vars.update({'tags': self.tags})
         output = self.jenv.get_template(self.settings.TEMPLATES['taglist']).render(self.tpl_vars)
         self._write_file(self._tag_index_path(), output)
