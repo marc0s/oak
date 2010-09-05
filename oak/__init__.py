@@ -18,7 +18,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from oak.models.post import Post
 from oak.models.tag import Tag
-from oak.utils import copytree_, Filters, Atom
+from oak.utils import copytree_, Filters
 from oak.processors import processor
 
 class Oak(object):
@@ -77,20 +77,6 @@ class Oak(object):
         }
 
 
-    def _post_path(self, filename):
-        """Calculates the final path for a post given a filename
-        
-        :param filename: the name of the input file
-        :type filename: string
-
-        :returns: string
-        """
-        self.logger.debug("_post_path:%s" % (filename,))
-        year, month = filename.split('-')[:2]
-        newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-        self.logger.debug("_post_path:%s" % (newfilename,))
-        return os.path.sep.join([self.settings.OUTPUT_PATH, year, month, newfilename])
-
     def _tag_path(self, tagname=None):
         """Calculates the final path for a tag page given a tag name
 
@@ -103,18 +89,6 @@ class Oak(object):
             return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX, "%s.html" % (tagname,)])
         return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX])
     
-    def _post_url(self, filename):
-        """Calculates the URL of a post given a filename
-
-        :param filename: the name of the output (generated) file
-        :type filename: string
-
-        :return: string
-        """
-        year, month = filename.split('-')[:2]
-        newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-        return os.path.sep.join([self.settings.PREFIX, year, month, newfilename])
-
     def _tag_url(self, tagname):
         """Calculates the URL for a tag page given a tag name
 
@@ -206,14 +180,8 @@ class Oak(object):
         self.logger.info("Rendering posts...")
         self.logger.info("Using %s as source of content." % (self.settings.CONTENT_PATH,))
         for f in glob.glob("%s/*.%s" % (self.settings.CONTENT_PATH,self.settings.SRC_EXT)):
-            filename = os.path.basename(f)
-            # TODO add sanity check on source filename (count of - ...)
-            post_path = os.path.sep.join([self.settings.CONTENT_PATH] + filename.split('-')[:2])
-            newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-            self.logger.info("Processing %s..." % (filename,))
-            post = Post(f, self.settings.POST_DEFAULTS, processor.MarkdownProcessor)
-            post['url'] = "%s%s" % (self.settings.BLOG_URL, self._post_url(newfilename))
-            post['id'] = Atom.gen_id(post)
+            self.logger.info("Processing %s..." % (f,))
+            post = Post(f, self.settings, processor.MarkdownProcessor)
             self.posts.append(post)
             # cache the tags of the current post
             for t in post['metadata']['tags']:
@@ -229,14 +197,15 @@ class Oak(object):
                 self.authors[author].append(post)
 
             # make sure we have the final path created
-            if not os.path.exists(post_path) or not os.path.isdir(post_path):
-                self.logger.debug("Output directory %s not found, creating" % (post_path,))
-                os.makedirs(post_path)
+            if not os.path.exists(os.path.dirname(post['output_path'])) or not os.path.isdir(os.path.dirname(post['output_path'])):
+                self.logger.debug("Output directory %s not found, creating" % (os.path.dirname(post['output_path']),))
+                os.makedirs(os.path.dirname(post['output_path']))
+
             self.tpl_vars.update({'post': post})
             self.logger.debug("tpl_vars: %s" % (self.tpl_vars,))
             output = self.jenv.get_template(self.settings.TEMPLATES['post']).render(self.tpl_vars)
-            self.logger.info("Generating output file in %s" % (self._post_path(filename),))
-            self._write_file(self._post_path(filename), output)
+            self.logger.info("Generating output file in %s" % (post['output_path'],))
+            self._write_file(post['output_path'], output)
             self.tpl_vars.pop('post') # remove the aded key
 
     def _do_tag(self, tag):
