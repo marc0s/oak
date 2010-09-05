@@ -21,6 +21,7 @@ BLOG_LICENSE_TEXT = 'The contents of this site are put on the <a href="http://cr
 # Put / if your blog will be in http://example.com/ or /blog if it will be in http://example.com/blog and so on
 ARCHIVE_PREFIX = 'archive'
 TAGS_PREFIX = 'tag'
+AUTHORS_PREFIX = 'author'
 
 # Set the path to the directory where the contents will be created
 CONTENT_PATH = 'content'
@@ -59,7 +60,9 @@ TEMPLATES = {
     'archive': 'archive.jinja', # the template will receive a full list of individual pages
     'post': 'post.jinja', # the template will receive ...
     'taglist': 'tags.jinja', # the template will receive a list of tags
+    'authorlist': 'authors.jinja', # the template will receive a list of authors
     'tag': 'tag.jinja', # the template for one tag
+    'author': 'author.jinja', # the template for one author
     'feed': 'atom.jinja', # the template for the atom feed
 }
 
@@ -67,7 +70,7 @@ HTMLS = {
     'index': 'index.html',
     'taglist': 'tags.html',
     'archive': 'archive.html',
-    'authors': 'authors.html',
+    'authorlist': 'authors.html',
     'feed': 'atom.xml',
 }
 

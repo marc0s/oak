@@ -1,0 +1,11 @@
+{% extends "base.jinja" %}
+{% block body %}
+<div id="main">
+    <h2>Author list</h2>
+    <ul>
+    {% for k,v in authors.iteritems() %}
+        <li><a href="{{v.url}}">{{v.author}}</a> ({{v.posts|length}})</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock body %}
