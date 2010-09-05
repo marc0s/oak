@@ -72,6 +72,7 @@ HTMLS = {
     'archive': 'archive.html',
     'authorlist': 'authors.html',
     'feed': 'atom.xml',
+    'css': 'static/css/main.css',
 }
 
 # Wether to generate a 'tags' index page or not (True or False)

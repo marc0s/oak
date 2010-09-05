@@ -77,6 +77,7 @@ class Oak(object):
                 'archive': os.path.sep.join([self.blog_url, self.settings.HTMLS['archive']]),
                 'authorlist': os.path.sep.join([self.blog_url, self.settings.HTMLS['authorlist']]),
                 'feed': os.path.sep.join([self.blog_url, self.settings.HTMLS['feed']]),
+                'css': os.path.sep.join([self.blog_url, self.settings.HTMLS['css']]),
             }
         }
 
