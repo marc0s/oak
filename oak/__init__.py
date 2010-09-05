@@ -55,7 +55,8 @@ class Oak(object):
         self.logger.info("Starting up...")
         # set up the Jinja environment
         # get the filters
-        self.jenv = Environment(loader=FileSystemLoader(os.path.sep.join([self.settings.LAYOUTS_PATH, self.settings.DEFAULT_LAYOUT])))
+        self.jenv = Environment(loader=FileSystemLoader(os.path.sep.join([self.settings.LAYOUTS_PATH, self.settings.DEFAULT_LAYOUT])),extensions=['jinja2.ext.i18n'])
+
         self.jenv.filters['datetimeformat'] = Filters.datetimeformat
         self.jenv.filters['longdate'] = Filters.longdate
         self.jenv.filters['shortdate'] = Filters.shortdate
