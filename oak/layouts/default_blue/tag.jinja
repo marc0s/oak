@@ -1,0 +1,11 @@
+{% extends "base.jinja" %}
+{% block body %}
+<div id="main">
+    <h2>Posts tagged with {{ tag.tag }}</h2>
+    <ul>
+    {% for p in tag.posts %}
+        <li><a href="{{ p.url }}">{{ p.metadata.title }}</a></li>
+    {% endfor %}
+    </li>
+</div>
+{% endblock body %}

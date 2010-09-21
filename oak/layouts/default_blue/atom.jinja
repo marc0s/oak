@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>{{ blog.title }}</title>
+	<link href="{{ links.feed }}" rel="self" />
+	<link href="{{ blog.url }}" />
+	<id>{{ blog.id }}</id>
+	<updated>{{ blog.last_updated }}</updated>
+	<author>
+		<name>{{ blog.author }}</name>
+		{% if blog.email %}<email>{{ blog.email }}</email>{% endif %}
+	</author>
+    {% for p in posts %}
+	<entry>
+		<title>{{ p.metadata.title }}</title>
+		<link href="{{ p.url }}" />
+		<id>{{ p.id }}</id>
+		<updated>{{ p.metadata.pub_date|isodate }}</updated>
+		<content type="xhtml">
+            <div xmlns="http://www.w3.org/1999/xhtml">{{ p.html }}</div>
+        </content>
+	</entry>
+    {% endfor %}
+</feed>

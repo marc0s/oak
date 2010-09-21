@@ -9,17 +9,19 @@ EMAIL = 'your email' # not required
 # Set the blog title
 BLOG_TITLE = 'your blog title'
 
-# Set the URL of your blog, only used when generating the Atom feed.
-BLOG_URL = 'http://example.com'
+# Set the URL of your blog, only used when generating the Atom feed. Without 'http://'.
+BLOG_DOMAIN = 'example.com'
+# Put 'blog' if your blog will be in http://example.com/blog and let it empty if your blog will be in http://example.com/
+BLOG_PREFIX = ''
 
 # The blog's contents license, you can include HTML
 BLOG_LICENSE_TEXT = 'The contents of this site are put on the <a href="http://creativecommons.org/publicdomain/zero/1.0/">public domain</a>'
 
 # URL prefixes
 # Put / if your blog will be in http://example.com/ or /blog if it will be in http://example.com/blog and so on
-PREFIX = ''
 ARCHIVE_PREFIX = 'archive'
 TAGS_PREFIX = 'tag'
+AUTHORS_PREFIX = 'author'
 
 # Set the path to the directory where the contents will be created
 CONTENT_PATH = 'content'
@@ -58,7 +60,9 @@ TEMPLATES = {
     'archive': 'archive.jinja', # the template will receive a full list of individual pages
     'post': 'post.jinja', # the template will receive ...
     'taglist': 'tags.jinja', # the template will receive a list of tags
+    'authorlist': 'authors.jinja', # the template will receive a list of authors
     'tag': 'tag.jinja', # the template for one tag
+    'author': 'author.jinja', # the template for one author
     'feed': 'atom.jinja', # the template for the atom feed
 }
 
@@ -66,8 +70,9 @@ HTMLS = {
     'index': 'index.html',
     'taglist': 'tags.html',
     'archive': 'archive.html',
-    'authors': 'authors.html',
+    'authorlist': 'authors.html',
     'feed': 'atom.xml',
+    'css': 'static/css/main.css',
 }
 
 # Wether to generate a 'tags' index page or not (True or False)

@@ -1,0 +1,17 @@
+{% extends "base.jinja" %}
+{% block title %}
+{{ blog.title }} :: tags
+{% endblock title %}
+{% block subheader %}
+<h1 class="post">tags</h1>
+{% endblock subheader %}
+{% block body %}
+<div id="main">
+    <h2>tag list</h2>
+    <ul>
+    {% for k,v in tags.iteritems() %}
+        <li><a href="{{v.url}}">{{v.tag}}</a> ({{v.posts|length}})</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock body %}

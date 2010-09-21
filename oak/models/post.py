@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 import yaml
 import codecs
 
+from oak.utils import Atom
 import oak.processors as procs
 
 HEADER_MARK = '---'
@@ -39,11 +41,11 @@ class Post(dict):
     header start and end.
 
     """
-    def __init__(self, f, metadata, processor=None):
+    def __init__(self, f, url, settings, processor=None):
         """The Post class __init__
 
         :param f: the path to the post file
-        :param metadata: default metadata dict
+        :param settings: the blog settings
         :param processor: the processor to render post's contents
         :processor type: class
 
@@ -54,6 +56,8 @@ class Post(dict):
         except:
             raise PostError('Unable to open file. Hint: isn\'t it UTF-8 encoded?')
         
+        metadata = settings.POST_DEFAULTS
+
         # Set metadata to the app defaults
         self['metadata'] = metadata.copy()
         self.f = _f.read()
@@ -67,3 +71,37 @@ class Post(dict):
             p = processor()
             self = p.process(self)
 
+        # Partial refactoring
+        filename = os.path.basename(f)
+        name, extension = os.path.splitext(filename)
+
+        # TODO add sanity check on source filename (count of - ...)
+        self['output_path'] = self._post_path(name, settings.OUTPUT_PATH) 
+        self['url'] = "%s%s" % (url, self._post_url(name))
+        self['id'] = Atom.gen_id(self)
+
+    def _post_url(self, name):
+        """Calculates the URL of a post given a name
+
+        :param name: the name of the output (generated) file
+        :type name: string
+
+        :return: string
+        """
+        year, month = name.split('-')[:2]
+        newfilename = "%s.html" % name
+        return os.path.sep.join(['', year, month, newfilename])
+
+    def _post_path(self, name, output_path):
+        """Calculates the final path for a post given a name
+        
+        :param name: the name of the input file
+        :type name: string
+
+        :returns: string
+        """
+        year, month = name.split('-')[:2]
+        newfilename = "%s.html" % name
+        return os.path.sep.join([output_path, year, month, newfilename])
+
+       

@@ -18,7 +18,8 @@ from jinja2 import Environment, FileSystemLoader
 
 from oak.models.post import Post
 from oak.models.tag import Tag
-from oak.utils import copytree_, Filters, Atom
+from oak.models.author import Author
+from oak.utils import copytree_, Filters
 from oak.processors import processor
 
 class Oak(object):
@@ -31,6 +32,7 @@ class Oak(object):
     posts = []
     authors = {}
     tags = {}
+    blog_url = None
 
     def __init__(self, logger=None, settings=None):
         """Initializes the class
@@ -48,10 +50,16 @@ class Oak(object):
         if settings:
             self.settings = settings
 
+        if self.settings.BLOG_PREFIX:
+            self.blog_url = "http://%s/%s" % (self.settings.BLOG_DOMAIN, self.settings.BLOG_PREFIX)
+        else:
+            self.blog_url = "http://%s" % (self.settings.BLOG_DOMAIN,)
+
         self.logger.info("Starting up...")
         # set up the Jinja environment
         # get the filters
-        self.jenv = Environment(loader=FileSystemLoader(os.path.sep.join([self.settings.LAYOUTS_PATH, self.settings.DEFAULT_LAYOUT])))
+        self.jenv = Environment(loader=FileSystemLoader(os.path.sep.join([self.settings.LAYOUTS_PATH, self.settings.DEFAULT_LAYOUT])),extensions=['jinja2.ext.i18n'])
+
         self.jenv.filters['datetimeformat'] = Filters.datetimeformat
         self.jenv.filters['longdate'] = Filters.longdate
         self.jenv.filters['shortdate'] = Filters.shortdate
@@ -60,70 +68,44 @@ class Oak(object):
         self.tpl_vars = {
             'blog': {
                 'title': self.settings.BLOG_TITLE,
-                'url': self.settings.BLOG_URL,
-                'id': "%s%s%s" % (self.settings.BLOG_URL, os.path.sep, "atom.xml"),
+                'url': self.blog_url,
+                'id': "%s%s%s" % (self.blog_url, os.path.sep, "atom.xml"),
                 'last_updated': None, # Will be updated when reading posts.
                 'author': self.settings.AUTHOR,
                 'email': self.settings.EMAIL,
             },
             'license_text': self.settings.BLOG_LICENSE_TEXT,
             'links': {
-                'site': self.settings.PREFIX or '/', # if there is no prefix, use /
-                'taglist': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['taglist']]),
-                'archive': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['archive']]),
-                'authors': os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['authors']]),
-                'feed': os.path.sep.join([self.settings.BLOG_URL, self.settings.HTMLS['feed']]),
+                'site': self.blog_url,
+                'taglist': os.path.sep.join([self.blog_url, self.settings.HTMLS['taglist']]),
+                'archive': os.path.sep.join([self.blog_url, self.settings.HTMLS['archive']]),
+                'authorlist': os.path.sep.join([self.blog_url, self.settings.HTMLS['authorlist']]),
+                'feed': os.path.sep.join([self.blog_url, self.settings.HTMLS['feed']]),
+                'css': os.path.sep.join([self.blog_url, self.settings.HTMLS['css']]),
             }
         }
 
+    def _author_path(self, authorname=None):
+        """Calculates the final path for a author page given a author name
 
-    def _post_path(self, filename):
-        """Calculates the final path for a post given a filename
-        
-        :param filename: the name of the input file
-        :type filename: string
-
-        :returns: string
-        """
-        self.logger.debug("_post_path:%s" % (filename,))
-        year, month = filename.split('-')[:2]
-        newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-        self.logger.debug("_post_path:%s" % (newfilename,))
-        return os.path.sep.join([self.settings.OUTPUT_PATH, year, month, newfilename])
-
-    def _tag_path(self, tagname=None):
-        """Calculates the final path for a tag page given a tag name
-
-        :param tagname: the name of the tag. If None, return just the directory where tag files are write to
-        :type tagname: string
+        :param authorname: the name of the author. If None, return just the directory where author files are write to
+        :type authorname: string
 
         :returns: string
         """
-        if tagname:
-            return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX, "%s.html" % (tagname,)])
-        return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX])
-    
-    def _post_url(self, filename):
-        """Calculates the URL of a post given a filename
+        if authorname:
+            return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.AUTHORS_PREFIX, "%s.html" % (authorname,)])
+        return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.AUTHORS_PREFIX])
 
-        :param filename: the name of the output (generated) file
-        :type filename: string
+    def _author_url(self, authorname):
+        """Calculates the URL for a author page given a author name
 
-        :return: string
-        """
-        year, month = filename.split('-')[:2]
-        newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-        return os.path.sep.join([self.settings.PREFIX, year, month, newfilename])
-
-    def _tag_url(self, tagname):
-        """Calculates the URL for a tag page given a tag name
-
-        :param tagname: the name of the tag
-        :type tagname: string
+        :param authorname: the name of the author
+        :type authorname: string
 
         :return: string
         """
-        return os.path.sep.join([self.settings.PREFIX, self.settings.TAGS_PREFIX, "%s.html" % (tagname,)])
+        return os.path.sep.join([self.settings.AUTHORS_PREFIX, "%s.html" % (authorname,)])
 
     def _index_path(self):
         """Calculates the path of the index page
@@ -137,14 +119,21 @@ class Oak(object):
 
         :returns: string
         """
-        return os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['index']])
+        return os.path.sep.join([self.settings.HTMLS['index']])
 
     def _tag_index_url(self):
         """Calculates the URL for the tags index page
 
         :returns: string
         """
-        return os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['taglist']])
+        return os.path.sep.join([self.settings.HTMLS['taglist']])
+
+    def _author_index_url(self):
+        """Calculates the URL for the authors index page
+
+        :returns: string
+        """
+        return os.path.sep.join([self.settings.HTMLS['authorlist']])
 
     def _tag_index_path(self):
         """Calculates the PATH for the tags index page
@@ -152,6 +141,13 @@ class Oak(object):
         :returns: string
         """
         return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.HTMLS['taglist']])
+
+    def _author_index_path(self):
+        """Calculates the PATH for the author index page
+
+        :returns: string
+        """
+        return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.HTMLS['authorlist']])
 
     def _feed_path(self):
         """Calculates the PATH for the atom.xml feed
@@ -168,7 +164,7 @@ class Oak(object):
         return os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.HTMLS['archive']])
 
     def _archive_url(self):
-        return os.path.sep.join([self.settings.PREFIX, self.settings.HTMLS['archive']])
+        return os.path.sep.join([self.settings.HTMLS['archive']])
         
     def _write_file(self, filename, content):
         """Writes content in filename.
@@ -206,37 +202,32 @@ class Oak(object):
         self.logger.info("Rendering posts...")
         self.logger.info("Using %s as source of content." % (self.settings.CONTENT_PATH,))
         for f in glob.glob("%s/*.%s" % (self.settings.CONTENT_PATH,self.settings.SRC_EXT)):
-            filename = os.path.basename(f)
-            # TODO add sanity check on source filename (count of - ...)
-            post_path = os.path.sep.join([self.settings.CONTENT_PATH] + filename.split('-')[:2])
-            newfilename = "%s.html" % (os.path.splitext(filename)[0],)
-            self.logger.info("Processing %s..." % (filename,))
-            post = Post(f, self.settings.POST_DEFAULTS, processor.MarkdownProcessor)
-            post['url'] = "%s%s" % (self.settings.BLOG_URL, self._post_url(newfilename))
-            post['id'] = Atom.gen_id(post)
+            self.logger.info("Processing %s..." % (f,))
+            post = Post(f, self.blog_url, self.settings, processor.MarkdownProcessor)
             self.posts.append(post)
             # cache the tags of the current post
             for t in post['metadata']['tags']:
                 if t not in self.tags.keys():
-                    self.tags[t] = Tag(tag=t, url=self._tag_url(t), posts=[post])
+                    self.tags[t] = Tag(tag=t, settings=self.settings, posts=[post])
                 else:
                     self.tags[t]['posts'].append(post)
             # cache the author of the current post
             author = post['metadata']['author']
             if author not in self.authors.keys():
-                self.authors[author] = [post]
+                self.authors[author] = Author(author=author,url=self._author_url(author), posts=[post])
             else:
                 self.authors[author].append(post)
-
+            
             # make sure we have the final path created
-            if not os.path.exists(post_path) or not os.path.isdir(post_path):
-                self.logger.debug("Output directory %s not found, creating" % (post_path,))
-                os.makedirs(post_path)
+            if not os.path.exists(os.path.dirname(post['output_path'])) or not os.path.isdir(os.path.dirname(post['output_path'])):
+                self.logger.debug("Output directory %s not found, creating" % (os.path.dirname(post['output_path']),))
+                os.makedirs(os.path.dirname(post['output_path']))
+
             self.tpl_vars.update({'post': post})
             self.logger.debug("tpl_vars: %s" % (self.tpl_vars,))
             output = self.jenv.get_template(self.settings.TEMPLATES['post']).render(self.tpl_vars)
-            self.logger.info("Generating output file in %s" % (self._post_path(filename),))
-            self._write_file(self._post_path(filename), output)
+            self.logger.info("Generating output file in %s" % (post['output_path'],))
+            self._write_file(post['output_path'], output)
             self.tpl_vars.pop('post') # remove the aded key
 
     def _do_tag(self, tag):
@@ -244,23 +235,47 @@ class Oak(object):
         """
         self.tpl_vars.update({'tag': tag})
         output = self.jenv.get_template(self.settings.TEMPLATES['tag']).render(self.tpl_vars)
-        self.logger.info("Generating tag page for %s in %s" % (tag['tag'], self._tag_path(tag['tag'])))
-        self._write_file(self._tag_path(tag['tag']), output)
+        self.logger.info("Generating tag page for %s in %s" % (tag['tag'], tag['path']))
+        self._write_file(tag['path'], output)
         # remove added keys
         self.tpl_vars.pop('tag') 
 
     def _do_tags(self):
         """Do the tags index page
         """
-        if not os.path.exists(self._tag_path()) or not os.path.isdir(self._tag_path()):
-            self.logger.debug("Tag files directory %s not found, creating" % (self._tag_path(),))
-            os.makedirs(self._tag_path())
+        tags_dir = os.path.sep.join([self.settings.OUTPUT_PATH, self.settings.TAGS_PREFIX]) 
+        if not os.path.exists(tags_dir) or not os.path.isdir(tags_dir):
+            self.logger.debug("Tag files directory %s not found, creating" % (tags_dir,))
+            os.makedirs(tags_dir)
         self.tpl_vars.update({'tags': self.tags})
         output = self.jenv.get_template(self.settings.TEMPLATES['taglist']).render(self.tpl_vars)
         self._write_file(self._tag_index_path(), output)
         self.tpl_vars.pop('tags')
         for t in self.tags.keys():
             self._do_tag(self.tags[t])
+
+    def _do_author(self, author):
+        """Create the page for the author 'author'
+        """
+        self.tpl_vars.update({'author': author})
+        output = self.jenv.get_template(self.settings.TEMPLATES['author']).render(self.tpl_vars)
+        self.logger.info("Generating author page for %s in %s" % (author['author'], self._author_path(author['author'])))
+        self._write_file(self._author_path(author['author']), output)
+        # remove added keys
+        self.tpl_vars.pop('author') 
+
+    def _do_authors(self):
+        """Do the authors index page
+        """
+        if not os.path.exists(self._author_path()) or not os.path.isdir(self._author_path()):
+            self.logger.debug("Author files directory %s not found, creating" % (self._author_path(),))
+            os.makedirs(self._author_path())
+        self.tpl_vars.update({'authors': self.authors})
+        output = self.jenv.get_template(self.settings.TEMPLATES['authorlist']).render(self.tpl_vars)
+        self._write_file(self._author_index_path(), output)
+        self.tpl_vars.pop('authors')
+        for a in self.authors.keys():
+            self._do_author(self.authors[a])
 
     def _do_index(self):
         # ------ POSTS INDEX ------
@@ -303,6 +318,7 @@ class Oak(object):
 
         self._do_posts()
         self._do_tags()
+        self._do_authors()
         self._copy_statics()
         self._do_index()
         # the feed MUST be done after the index
