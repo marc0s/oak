@@ -50,7 +50,10 @@ class Oak(object):
         if settings:
             self.settings = settings
 
-        self.blog_url = "http://%s/%s" % (self.settings.BLOG_DOMAIN, self.settings.BLOG_PREFIX)
+        if self.settings.BLOG_PREFIX:
+            self.blog_url = "http://%s/%s" % (self.settings.BLOG_DOMAIN, self.settings.BLOG_PREFIX)
+        else:
+            self.blog_url = "http://%s" % (self.settings.BLOG_DOMAIN,)
 
         self.logger.info("Starting up...")
         # set up the Jinja environment
