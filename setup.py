@@ -13,7 +13,7 @@ def find_templates():
 
 setup(
     name='Oak',
-    version='dev',
+    version='0.1.8',
     url='http://github.com/marc0s/oak',
     author='marc0s',
     author_email='marc0s@fsfe.org',
