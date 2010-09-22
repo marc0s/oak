@@ -216,7 +216,7 @@ class Oak(object):
             if author not in self.authors.keys():
                 self.authors[author] = Author(author=author,url=self._author_url(author), posts=[post])
             else:
-                self.authors[author].append(post)
+                self.authors[author]['posts'].append(post)
             
             # make sure we have the final path created
             if not os.path.exists(os.path.dirname(post['output_path'])) or not os.path.isdir(os.path.dirname(post['output_path'])):
