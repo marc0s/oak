@@ -62,8 +62,8 @@ that clones we will be able to push new content to the blog.
 ## Contact
 
 If you want to collaborate with the oak development you can get in touch
-with us in the #oakblog channel at irc.freenode.org. Also you can report
-bugs at https://dev.tenak.net/projects/oak. 
+with us in the #oakblog channel at irc.freenode.org. 
 
 There is also a mailing list at https://llistes.tenak.net/listinfo/oak
+where you can ask your questions or report bugs.
 
