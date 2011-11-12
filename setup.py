@@ -20,7 +20,7 @@ setup(
     packages=['oak', 'oak.models', 'oak.processors', 'oak.utils'],
     package_data={'oak': ['scripts/manage.py', ] + find_templates() },
     scripts=['bin/oak-admin.py',],
-    requires=['Jinja2','Markdown','PyYAML','Pygments'],
+    install_requires=['Jinja2','Markdown','PyYAML','Pygments'],
     license='WTFPL',
     description='A simple static-blog generator',
     long_description=open('README.md').read(),
